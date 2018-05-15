@@ -1,0 +1,7 @@
+<ul>
+{% for corpus in corpuses %}
+    <li>{{ corpus.name }}: {{ corpus.contents }}</li>
+{% empty %}
+    <li>No corpus yet.</li>
+{% endfor %}
+</ul>

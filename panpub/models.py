@@ -3,18 +3,15 @@
 from io import StringIO
 from sys import getsizeof
 
-from django.core.validators import FileExtensionValidator
+from django.contrib.auth.models import User
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
-from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
 
 import hashlib
 import pypandoc
-
-from model_utils.models import TimeStampedModel
 
 
 class Crafter(models.Model):
@@ -26,23 +23,54 @@ class Crafter(models.Model):
 
 class Corpus(models.Model):
     name = models.CharField(max_length=100)
+    datestamp = models.DateField(null=True)
+    description = models.TextField(blank=True)
+    license = models.CharField(max_length=100)
+
+    def get_absolute_url(self):
+        return reverse('Corpus_detail', args=[str(self.pk),])
+
+    def __str__(self):
+         return self.name
+
+    def only():
+        contents = Content.objects.values_list('pk', flat=True)
+        return Corpus.objects.exclude(pk__in=contents)
+
+    def get_contents(self):
+        return Content.objects.filter(corpuses=self)
+
+    def add_content(self, pk):
+        if Content.objects.filter(pk=pk).exists():
+            c = Content.objects.get(pk=pk)
+            c.corpuses.add(self)
+
+    def sup_content(self, pk):
+        if Content.objects.filter(pk=pk).exists():
+            c = Content.objects.get(pk=pk)
+            c.corpuses.delete(self)
+            self.delete(c)
 
 
-class Content(TimeStampedModel):
-    name = models.CharField(max_length=100)
+class Content(Corpus):
     claims = models.ManyToManyField(
         Crafter,
         through='Claim',
         through_fields=('content', 'crafter'),
     )
-    description = models.TextField(blank=True)
-    corpuses = models.ManyToManyField(Corpus)
+    corpuses = models.ManyToManyField(Corpus, related_name='+')
+
+    def get_absolute_url(self):
+        return None
+
+    def __str__(self):
+        return self.name
 
 
 class Text(Content):
     pandoc_formats = (
         ('markdown', 'Markdown'),
-        ('gfm', 'Markdown (github-style)'),
+        ('gfm', 'Markdown (github-flavour)'),
         ('latex', 'LaTeX'),
         ('docx', 'Word docx'),
         ('odt', 'OpenDocument ODT'),
@@ -54,19 +82,27 @@ class Text(Content):
     )
 
     input_type = models.CharField(max_length=10,
-                                  choices=pandoc_formats) 
-    document = models.FileField(upload_to='panpub/texts/',)
-#                                validators=[FileExtensionAllowed(allowed_extensions=['doc', 'md', 'rst', 'txt'])])
+                                  choices=pandoc_formats,
+                                  default='markdown')
+
+
+    # todo: homemade validator. quickwin: FileExtensionAllowed() ?
+    document = models.FileField(
+        upload_to='panpub-media/texts/',
+        )
+
 
     def get_absolute_url(self):
         return reverse('Text_detail', args=[str(self.pk),])
+
 
     def save(self):
         try:
             data = self.document.read()
             data = pypandoc.convert_text(data, to='md', format=self.input_type)
             datafile = StringIO(data)
-            self.document = InMemoryUploadedFile(datafile,
+            self.document = InMemoryUploadedFile(
+                                             datafile,
                                              'FileField',
                                              '{}.md'.format(hashlib.sha256(data.encode()).hexdigest()),
                                              'text/markdown',
@@ -80,11 +116,11 @@ class Text(Content):
 
 
 class Picture(Content):
-    document = models.FileField(upload_to='panpub/pictures/')
+    document = models.FileField(upload_to='panpub-media/pictures/')
 
 
 class Record(Content):
-    document = models.FileField(upload_to='panpub/records/')
+    document = models.FileField(upload_to='panpub-media/records/')
 
 
 class OutsideLink(models.Model):
@@ -92,21 +128,27 @@ class OutsideLink(models.Model):
 
 
 class Claim(models.Model):
-    CREATOR = 'CR'
-    CURATOR = 'CU'
-    MEDIATOR = 'ME'
+    CREATOR = 'CRT'
+    CURATOR = 'CUR'
+    MEDIATOR = 'MED'
     CLAIMS = (
-        (CREATOR, 'Creator'),
-        (CURATOR, 'Curator'),
-        (MEDIATOR, 'Mediator'),
+        (CREATOR, 'creator'),
+        (CURATOR, 'curator'),
+        (MEDIATOR, 'mediator'),
     )
     content = models.ForeignKey(Content, on_delete=models.CASCADE)
     crafter = models.ForeignKey(Crafter, on_delete=models.CASCADE)
     claim_type = models.CharField(
-        max_length=2,
+        max_length=3,
         choices=CLAIMS,
         default=CREATOR
     )
+
+
+    def __str__(self):
+        return "{} has a {} claim on {}".format(self.crafter,
+                                                self.claim_type,
+                                                self.content)
 
 
 @receiver(post_save, sender=User)

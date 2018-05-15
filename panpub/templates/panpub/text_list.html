@@ -1,0 +1,7 @@
+<ul>
+{% for text in texts %}
+    <li>{{ text.name }}: {{ text.description }} ({{ text.datestamp.created }}) - {{ text.claims }}</li>
+{% empty %}
+    <li>No text yet.</li>
+{% endfor %}
+</ul>

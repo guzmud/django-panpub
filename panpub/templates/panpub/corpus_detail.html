@@ -1,0 +1,7 @@
+<h1>{{ corpus.name }}</h1>
+
+<ul>
+{% for content in corpus.contents %}
+    <li>{{ content.name }}</li>
+{% endfor %}
+</ul>

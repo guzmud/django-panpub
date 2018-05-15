@@ -1,0 +1,9 @@
+{% load markdown_deux_tags %}
+
+<h1>{{ text.name }}</h1>
+
+<p>{{ text.description }} ({{ text.datestamp.created }})</p>
+
+<p>{{ text.claims }}</p>
+
+{{ text.document.read|markdown }}
