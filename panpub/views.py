@@ -13,58 +13,58 @@ from .models import (
 )
 
 
-class CorpusCreateView(CreateView):
+class CorpusCreate(CreateView):
 
     model = Corpus
     fields = ['name', 'datestamp', 'description']
 
 
-class CorpusDeleteView(DeleteView):
+class CorpusDelete(DeleteView):
 
     model = Corpus
 
 
-class CorpusDetailView(DetailView):
+class CorpusDetail(DetailView):
 
     model = Corpus
     context_object_name = 'corpus'
 
 
-class CorpusUpdateView(UpdateView):
+class CorpusUpdate(UpdateView):
 
     model = Corpus
 
 
-class CorpusListView(ListView):
+class CorpusList(ListView):
 
     model = Corpus
     context_object_name = 'corpuses'
     paginate_by = 10
 
 
-class TextCreateView(CreateView):
+class TextCreate(CreateView):
 
     model = Text
     fields = ['name', 'description', 'document', 'input_type']
 
 
-class TextDeleteView(DeleteView):
+class TextDelete(DeleteView):
 
     model = Text
 
 
-class TextDetailView(DetailView):
+class TextDetail(DetailView):
 
     model = Text
     context_object_name = 'text'
 
 
-class TextUpdateView(UpdateView):
+class TextUpdate(UpdateView):
 
     model = Text
 
 
-class TextListView(ListView):
+class TextList(ListView):
     model = Text
     context_object_name = 'texts'
     paginate_by = 10

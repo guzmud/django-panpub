@@ -20,12 +20,19 @@ class Crafter(models.Model):
     def __str__(self):
         return str(self.user)
 
+    def claims(self, claim_type=None):
+        claims = Claim.objects.filter(crafter=self)
+        if claim_type in ['CRT', 'CUR', 'MED']:
+            claims = claims.filter(claim_type=claim_type)
+        return claims
+
 
 class Corpus(models.Model):
     name = models.CharField(max_length=100)
     datestamp = models.DateField(null=True)
     description = models.TextField(blank=True)
     license = models.CharField(max_length=100)
+    ready = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('Corpus_detail', args=[str(self.pk),])
@@ -50,6 +57,19 @@ class Corpus(models.Model):
             c = Content.objects.get(pk=pk)
             c.corpuses.delete(self)
             self.delete(c)
+
+    def publish(self):
+        self.ready = True
+
+    def claims(self):
+        contents = self.get_contents()
+        claims = Claim.objects.filter(content__in=contents)
+        return claims
+
+    def claimers(self):
+        claims = self.claims()
+        claimers = Crafter.objects.filter(pk__in=claims.values('crafter__pk').distinct())
+        return claimers
 
 
 class Content(Corpus):
@@ -85,16 +105,13 @@ class Text(Content):
                                   choices=pandoc_formats,
                                   default='markdown')
 
-
     # todo: homemade validator. quickwin: FileExtensionAllowed() ?
     document = models.FileField(
         upload_to='panpub-media/texts/',
         )
 
-
     def get_absolute_url(self):
         return reverse('Text_detail', args=[str(self.pk),])
-
 
     def save(self):
         try:
@@ -143,7 +160,6 @@ class Claim(models.Model):
         choices=CLAIMS,
         default=CREATOR
     )
-
 
     def __str__(self):
         return "{} has a {} claim on {}".format(self.crafter,

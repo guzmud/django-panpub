@@ -18,7 +18,7 @@ Main classes: *Corpus*, *Content*, *Crafter*, *Claim*
 
 Decorator: has_any_claim, has_creator_claim, has_curator_claim, has_mediator_claim
 
-Templatetags: crafterworks, craftercorpuses
+Templatetags: crafterworks
 
 
 ## Writing
