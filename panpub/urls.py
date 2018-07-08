@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from django.conf.urls import url
 from django.views.generic import TemplateView
 
-from . import views
+from panpub import views
 
 urlpatterns = [
     url(
@@ -31,28 +32,38 @@ urlpatterns = [
         name='Corpus_list',
     ),
     url(
-        regex="^Text/~create/$",
+        regex="^text/~create/$",
         view=views.TextCreate.as_view(),
         name='Text_create',
     ),
     url(
-        regex="^Text/(?P<pk>\d+)/~delete/$",
+        regex="^text/(?P<pk>\d+)/~delete/$",
         view=views.TextDelete.as_view(),
         name='Text_delete',
     ),
     url(
-        regex="^Text/(?P<pk>\d+)/$",
+        regex="^text/(?P<pk>\d+)/$",
         view=views.TextDetail.as_view(),
         name='Text_detail',
     ),
     url(
-        regex="^Text/(?P<pk>\d+)/~update/$",
+        regex="^text/(?P<pk>\d+)/~update/$",
         view=views.TextUpdate.as_view(),
         name='Text_update',
     ),
     url(
-        regex="^Text/$",
+        regex="^text/(?P<text_id>\d+)/export/(?P<export_format>\w+)/$",
+        view=views.text_export,
+        name='text_export',
+    ),
+    url(
+        regex="^text/$",
         view=views.TextList.as_view(),
         name='Text_list',
     ),
-	]
+    url(
+        regex="op/export/$",
+        view=views.panpub_export,
+        name='panpub_export',
+    ),
+]

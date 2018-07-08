@@ -1,17 +1,26 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from io import StringIO
 from sys import getsizeof
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.urls import reverse
+from django.utils.text import slugify
 
 import hashlib
 import pypandoc
+
+
+if hasattr(settings, 'PANPUB_MEDIA'):
+    PANPUB_MEDIA = settings.PANPUB_MEDIA
+else:
+    PANPUB_MEDIA = 'panpub-media'
 
 
 class Crafter(models.Model):
@@ -35,10 +44,10 @@ class Corpus(models.Model):
     ready = models.BooleanField(default=False)
 
     def get_absolute_url(self):
-        return reverse('Corpus_detail', args=[str(self.pk),])
+        return reverse('Corpus_detail', args=[str(self.pk), ])
 
     def __str__(self):
-         return self.name
+        return self.name
 
     def only():
         contents = Content.objects.values_list('pk', flat=True)
@@ -68,8 +77,9 @@ class Corpus(models.Model):
 
     def claimers(self):
         claims = self.claims()
-        claimers = Crafter.objects.filter(pk__in=claims.values('crafter__pk').distinct())
-        return claimers
+        claimers = claims.values('crafter__pk').distinct()
+        crafters = Crafter.objects.filter(pk__in=claimers)
+        return crafters
 
 
 class Content(Corpus):
@@ -88,6 +98,7 @@ class Content(Corpus):
 
 
 class Text(Content):
+
     pandoc_formats = (
         ('markdown', 'Markdown'),
         ('gfm', 'Markdown (github-flavour)'),
@@ -107,37 +118,67 @@ class Text(Content):
 
     # todo: homemade validator. quickwin: FileExtensionAllowed() ?
     document = models.FileField(
-        upload_to='panpub-media/texts/',
+        upload_to='{}/texts/'.format(PANPUB_MEDIA),
         )
 
     def get_absolute_url(self):
-        return reverse('Text_detail', args=[str(self.pk),])
+        return reverse('Text_detail', args=[str(self.pk), ])
 
     def save(self):
         try:
             data = self.document.read()
             data = pypandoc.convert_text(data, to='md', format=self.input_type)
             datafile = StringIO(data)
+            dataname = hashlib.sha256(data.encode()).hexdigest()
             self.document = InMemoryUploadedFile(
                                              datafile,
                                              'FileField',
-                                             '{}.md'.format(hashlib.sha256(data.encode()).hexdigest()),
+                                             '{}.md'.format(dataname),
                                              'text/markdown',
                                              getsizeof(datafile),
                                              'UTF-8',
             )
-        except:
+        except Exception:
             raise Exception
         else:
-            super(Text,self).save()
+            super(Text, self).save()
+
+    def filefriendly_name(self):
+        return slugify(self.name)
+
+    def available_pubformats(self):
+        # docx, epub, odt require outputfile instead of var
+        # pdf requires xetex
+        return ('gfm',
+                'html',
+                'markdown',
+                )
+
+    def export(self, pubformat='markdown'):
+        if pubformat not in self.available_pubformats():
+            raise Exception
+        try:
+            data = pypandoc.convert_file(self.document.path,
+                                         pubformat,
+                                         format='md')
+            datafile = StringIO(data)
+        except Exception:
+            raise Exception
+        else:
+            filelen = len(datafile.getvalue())
+            filename = '{}.{}'.format(self.filefriendly_name(),
+                                      pubformat)
+            datafile.seek(0)
+            filedata = datafile.getvalue()
+            return filedata, filename, filelen
 
 
 class Picture(Content):
-    document = models.FileField(upload_to='panpub-media/pictures/')
+    document = models.FileField(upload_to='{}/pictures/'.format(PANPUB_MEDIA))
 
 
 class Record(Content):
-    document = models.FileField(upload_to='panpub-media/records/')
+    document = models.FileField(upload_to='{}/records/'.format(PANPUB_MEDIA))
 
 
 class OutsideLink(models.Model):
@@ -176,4 +217,3 @@ def create_crafter(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def update_crafter(sender, instance, **kwargs):
     instance.crafter.save()
-

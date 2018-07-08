@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from functools import wraps
 from django.core.exceptions import PermissionDenied
 
@@ -8,7 +9,8 @@ def _test_claim(content_pk, crafter, claim_type=None):
     test = False
     if Content.objects.filter(pk=content_pk).exists():
         content = Content.objects.get(pk=content_pk)
-        matching_claims = Claim.objects.filter(crafter=crafter, content=content)
+        matching_claims = Claim.objects.filter(crafter=crafter,
+                                               content=content)
         if claim_type is in ['CRT', 'CUR', 'MED']:
             matching_claims = matching_claims.filter(claim_type=claim_type)
         if matching_claims.exists():
@@ -20,7 +22,7 @@ def has_any_claim(content_pk):
     def decorator(func):
         def inner_decorator(request, *args, **kwargs):
             crafter = request.user.crafter
-            if _test_claim(content_pk, crafter)
+            if _test_claim(content_pk, crafter):
                 return func(request, *args, **kwargs)
             else:
                 raise PermissionDenied
@@ -62,4 +64,3 @@ def has_mediator_claim(content_pk):
                 raise PermissionDenied
         return wraps(func)(inner_decorator)
     return decorator
-
