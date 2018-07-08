@@ -73,6 +73,7 @@ def text_export(request, text_id, export_format):
 
     if not text.ready:
         raise PermissionDenied  # unless user has claim ?
+
     if export_format not in text.available_pubformats():
         raise Http404("Export format requested unavailable.")
 

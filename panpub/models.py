@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import pathlib
+import tempfile
 from io import StringIO
 from sys import getsizeof
 
@@ -147,30 +149,34 @@ class Text(Content):
         return slugify(self.name)
 
     def available_pubformats(self):
-        # docx, epub, odt require outputfile instead of var
         # pdf requires xetex
         return ('gfm',
                 'html',
                 'markdown',
+                'docx',
+                'epub',
+                'odt',
                 )
 
     def export(self, pubformat='markdown'):
         if pubformat not in self.available_pubformats():
             raise Exception
         try:
-            data = pypandoc.convert_file(self.document.path,
-                                         pubformat,
-                                         format='md')
-            datafile = StringIO(data)
+            with tempfile.NamedTemporaryFile() as f:
+                pypandoc.convert_file(self.document.path,
+                                      pubformat,
+                                      format='md',
+                                      outputfile=pathlib.Path(tempfile.tempdir, f.name).as_posix())
+                f.seek(0)
+                datafile = f.read()
         except Exception:
             raise Exception
         else:
-            filelen = len(datafile.getvalue())
+            filelen = len(datafile)
             filename = '{}.{}'.format(self.filefriendly_name(),
                                       pubformat)
-            datafile.seek(0)
-            filedata = datafile.getvalue()
-            return filedata, filename, filelen
+            filedata = datafile
+            return datafile, filename, filelen
 
 
 class Picture(Content):
