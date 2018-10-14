@@ -18,6 +18,11 @@ Panpub, from *pan* ("all, of everything") and *publishing*. A Django publishing 
 * Text model: use of pandoc as the middleman, upload and download
 
 
+## Requirements
+* Python3
+* Django
+* pandoc
+
 ## Ecosystem
 
 * models: Corpus, Content, Crafter, Claim
