@@ -1,2 +1,5 @@
-pypandoc
+django-filter
 django-markdown-deux
+pypandoc
+tablib[pandas]
+ujson

@@ -1,0 +1,7 @@
+<ul>
+{% for content in contents %}
+    <li>{{ content.name }}: {{ content.description }} ({{ content.datestamp.created }}) - {{ content.claims }}</li>
+{% empty %}
+    <li>No content yet.</li>
+{% endfor %}
+</ul>

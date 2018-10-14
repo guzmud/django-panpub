@@ -1,0 +1,7 @@
+<ul>
+{% for crafter in crafters %}
+    <li>{{ crafter.user.username }}: {{ crafter.claims }}</li>
+{% empty %}
+    <li>No crafter yet.</li>
+{% endfor %}
+</ul>

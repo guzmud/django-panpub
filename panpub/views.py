@@ -12,10 +12,23 @@ from django.views.generic import (
 )
 
 from panpub.models import (
+        Crafter,
 	Corpus,
+        Content,
 	Text,
         )
 from panpub import utils
+
+
+class CrafterList(ListView):
+    model = Crafter
+    context_object_name = 'crafters'
+    paginate_by = 10
+
+
+class CrafterDetail(DetailView):
+    model = Crafter
+    context_object_name = 'crafter'
 
 
 class CorpusCreate(CreateView):
@@ -40,6 +53,17 @@ class CorpusList(ListView):
     model = Corpus
     context_object_name = 'corpuses'
     paginate_by = 10
+
+
+class ContentList(ListView):
+    model = Content
+    context_object_name = 'contents'
+    paginate_by = 10
+
+
+class ContentDetail(DetailView):
+    model = Content
+    context_object_name = 'content'
 
 
 class TextCreate(CreateView):

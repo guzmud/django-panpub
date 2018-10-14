@@ -1,0 +1,7 @@
+<h1>{{ crafter.user.username }}</h1>
+
+<ul>
+{% for claim in crafter.claims %}
+    <li>{{ claim }}</li>
+{% endfor %}
+</ul>

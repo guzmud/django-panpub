@@ -51,6 +51,9 @@ class Corpus(models.Model):
     def __str__(self):
         return self.name
 
+    def filefriendly_name(self):
+        return slugify(self.name)
+
     def only():
         contents = Content.objects.values_list('pk', flat=True)
         return Corpus.objects.exclude(pk__in=contents)
@@ -145,9 +148,6 @@ class Text(Content):
         else:
             super(Text, self).save()
 
-    def filefriendly_name(self):
-        return slugify(self.name)
-
     def available_pubformats(self):
         # pdf requires xetex
         return ('gfm',
@@ -179,8 +179,102 @@ class Text(Content):
             return datafile, filename, filelen
 
 
+class Dataset(Content):
+
+    tablib_formats = ('csv',
+                      'json',
+                      'xls',
+                      'yaml',
+                      'tsv',
+                      'html',
+                      'xlsx',
+                      'ods',
+                      'dbf',
+                      'df',
+                      )
+
+    document = models.FileField(
+        upload_to='{}/datasets/'.format(PANPUB_MEDIA),
+        )
+
+    def get_absolute_url(self):
+        return reverse('Dataset_detail', args=[str(self.pk), ])
+
+    def save(self):
+        pass
+
+    def available_pubformats(self):
+        return tablib_formats+'latex'  #TODO
+
+    def export(self, pubformat='csv'):
+        pass
+
+
 class Picture(Content):
-    document = models.FileField(upload_to='{}/pictures/'.format(PANPUB_MEDIA))
+
+    pillow_formats = ('bmp',
+                      'eps',
+                      'gif',
+                      'icns',
+                      'ico',
+                      'im',
+                      'jpeg',
+                      'jpeg2000',
+                      'msp',
+                      'pcx',
+                      'png',
+                      'ppm',
+                      'sgi',
+                      'spider',
+                      'tga',
+                      'tiff',
+                      'webp',
+                      'xbm',
+                      )
+
+    pillow_r_formats = ('blp',
+                        'cur',
+                        'dcx',
+                        'dds',
+                        'fli',
+                        'flc',
+                        'fpx',
+                        'ftex',
+                        'gbr',
+                        'gd',
+                        'imt',
+                        'iptc/naa',
+                        'mcidas',
+                        'mic',
+                        'mpo',
+                        'pcd',
+                        'pixar',
+                        'psd',
+                        'wal',
+                        'xpm',
+                        ) + pillow_formats
+
+    pillow_w_formats = ('palm',
+                        'pdf',
+                        'xvthumbnail',
+                        ) + pillow_formats
+
+    document = models.FileField(
+        upload_to='{}/pictures/'.format(PANPUB_MEDIA),
+        )
+
+    def get_absolute_url(self):
+        return reverse('Picture_detail', args=[str(self.pk), ])
+
+    def save(self):
+        pass
+
+    def available_pubformats(self):
+        return pillow_w_formats
+
+    def export(self, pubformat='png'):
+        pass
+
 
 
 class Record(Content):
