@@ -11,7 +11,7 @@ def _test_claim(content_pk, crafter, claim_type=None):
         content = Content.objects.get(pk=content_pk)
         matching_claims = Claim.objects.filter(crafter=crafter,
                                                content=content)
-        if claim_type is in ['CRT', 'CUR', 'MED']:
+        if claim_type in ['CRT', 'CUR', 'MED']:
             matching_claims = matching_claims.filter(claim_type=claim_type)
         if matching_claims.exists():
             test = True

@@ -24,7 +24,7 @@ FORMAT_TYPE_MATRICE = {
 
 def xprformat_to_ctntype(export_format):
     try:
-        return FORMAT_TYPE_MATRICE['export_format']
+        return FORMAT_TYPE_MATRICE[export_format]
     except Exception:
         # should be nothing per RFC-7231
         return 'application/octet-stream'

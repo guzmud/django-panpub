@@ -13,9 +13,9 @@ from django.views.generic import (
 
 from panpub.models import (
         Crafter,
-	Corpus,
+        Corpus,
         Content,
-	Text,
+        Text,
         )
 from panpub import utils
 
@@ -104,16 +104,16 @@ def text_export(request, text_id, export_format):
     fdata, fname, flen = text.export(pubformat=export_format)
     content_type = utils.xprformat_to_ctntype(export_format)
     response = utils.prepare_fileresponse(fdata,
-					  fname,
-					  flen,
-					  content_type)
+                                          fname,
+                                          flen,
+                                          content_type)
     return response
 
 
 def panpub_export(request):
     ppdata, ppname, pplen = utils.panpub_export()
     response = utils.prepare_fileresponse(ppdata,
-					  ppname,
+                                          ppname,
                                           pplen,
-					  'application/x-gzip')
+                                          'application/x-gzip')
     return response

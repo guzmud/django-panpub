@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import hashlib
 import pathlib
 import tempfile
 from io import StringIO
@@ -15,7 +16,6 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.text import slugify
 
-import hashlib
 import pypandoc
 
 
@@ -63,14 +63,14 @@ class Corpus(models.Model):
 
     def add_content(self, pk):
         if Content.objects.filter(pk=pk).exists():
-            c = Content.objects.get(pk=pk)
-            c.corpuses.add(self)
+            content = Content.objects.get(pk=pk)
+            content.corpuses.add(self)
 
     def sup_content(self, pk):
         if Content.objects.filter(pk=pk).exists():
-            c = Content.objects.get(pk=pk)
-            c.corpuses.delete(self)
-            self.delete(c)
+            content = Content.objects.get(pk=pk)
+            content.corpuses.delete(self)
+            self.delete(content)
 
     def publish(self):
         self.ready = True
@@ -129,7 +129,7 @@ class Text(Content):
     def get_absolute_url(self):
         return reverse('Text_detail', args=[str(self.pk), ])
 
-    def save(self):
+    def save(self, *args, **kwargs):
         try:
             data = self.document.read()
             data = pypandoc.convert_text(data, to='md', format=self.input_type)
@@ -146,7 +146,7 @@ class Text(Content):
         except Exception:
             raise Exception
         else:
-            super(Text, self).save()
+            super(Text, self).save(*args, **kwargs)
 
     def available_pubformats(self):
         # pdf requires xetex
@@ -163,10 +163,12 @@ class Text(Content):
             raise Exception
         try:
             with tempfile.NamedTemporaryFile() as f:
+                outpath = pathlib.Path(tempfile.tempdir,
+                                       f.name).as_posix()
                 pypandoc.convert_file(self.document.path,
                                       pubformat,
                                       format='md',
-                                      outputfile=pathlib.Path(tempfile.tempdir, f.name).as_posix())
+                                      outputfile=outpath)
                 f.seek(0)
                 datafile = f.read()
         except Exception:
@@ -175,7 +177,6 @@ class Text(Content):
             filelen = len(datafile)
             filename = '{}.{}'.format(self.filefriendly_name(),
                                       pubformat)
-            filedata = datafile
             return datafile, filename, filelen
 
 
@@ -200,11 +201,11 @@ class Dataset(Content):
     def get_absolute_url(self):
         return reverse('Dataset_detail', args=[str(self.pk), ])
 
-    def save(self):
+    def save(self, *args, **kwargs):
         pass
 
     def available_pubformats(self):
-        return tablib_formats+'latex'  #TODO
+        return self.tablib_formats+'latex'  # TODO
 
     def export(self, pubformat='csv'):
         pass
@@ -266,15 +267,14 @@ class Picture(Content):
     def get_absolute_url(self):
         return reverse('Picture_detail', args=[str(self.pk), ])
 
-    def save(self):
+    def save(self, *args, **kwargs):
         pass
 
     def available_pubformats(self):
-        return pillow_w_formats
+        return self.pillow_w_formats
 
     def export(self, pubformat='png'):
         pass
-
 
 
 class Record(Content):
@@ -316,4 +316,4 @@ def create_crafter(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def update_crafter(sender, instance, **kwargs):
-    instance.crafter.save()
+    instance.crafter.save(**kwargs)
