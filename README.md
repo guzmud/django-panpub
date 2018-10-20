@@ -14,7 +14,7 @@ Panpub, from *pan* ("all, of everything") and *publishing*. A Django publishing 
 
 
 ## Achieved features
-* Panpub ecosystem: claim system, corpus creation, system-wide exporting
+* Panpub ecosystem: claim system, corpus creation, system-wide exporting, search system (*django-filter*)
 * Text model: use of pandoc as the middleman, upload and download
 
 
@@ -43,7 +43,7 @@ Panpub, from *pan* ("all, of everything") and *publishing*. A Django publishing 
 ## Spoilers
 
 * Text medium: fixing integration of xetex and adding .pdf to the outputs, extending .md and .latex plugins
-* Picture medium: Pillow-fed input, with opt-in EXIF-cleaner and LSB-smoother (a.k.a. *anti-steganography**)
+* Picture medium: Pillow-fed input, with opt-in EXIF-cleaner and LSB-smoother (a.k.a. *anti-steganography*)
 * Dataset medium: Tablib-fed input
 * pandoc auto-installation
 * and even more !
