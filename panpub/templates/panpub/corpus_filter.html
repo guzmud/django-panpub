@@ -1,0 +1,12 @@
+<form action="" method="get">
+    {{ filter.form.as_p }}
+    <input type="submit" />
+</form>
+
+<ul>
+{% for corpus in filter.qs %}
+    <li>{{ corpus.name }}: {{ corpus.contents }}</li>
+{% empty %}
+    <li>No corpus yet.</li>
+{% endfor %}
+</ul>

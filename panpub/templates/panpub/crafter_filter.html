@@ -1,0 +1,12 @@
+<form action="" method="get">
+    {{ filter.form.as_p }}
+    <input type="submit" />
+</form>
+
+<ul>
+{% for crafter in filter.qs %}
+    <li>{{ crafter.user.username }}: {{ crafter.claims }}</li>
+{% empty %}
+    <li>No crafters yet.</li>
+{% endfor %}
+</ul>

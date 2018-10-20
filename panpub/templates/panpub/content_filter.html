@@ -1,0 +1,12 @@
+<form action="" method="get">
+    {{ filter.form.as_p }}
+    <input type="submit" />
+</form>
+
+<ul>
+{% for content in filter.qs %}
+    <li>{{ content.name }}: {{ content.description }} ({{ content.datestamp.created }}) - {{ content.claims }}</li>
+{% empty %}
+    <li>No content yet.</li>
+{% endfor %}
+</ul>
