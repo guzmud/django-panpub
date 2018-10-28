@@ -1,6 +1,8 @@
+<h1>Crafters</h1>
+
 <ul>
 {% for crafter in crafters %}
-    <li>{{ crafter.user.username }}: {{ crafter.claims }}</li>
+    <li><a href="{{ crafter.get_absolute_url }}">{{ crafter.user.username }}</a>: {{ crafter.claims }}</li>
 {% empty %}
     <li>No crafter yet.</li>
 {% endfor %}

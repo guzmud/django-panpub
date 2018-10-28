@@ -1,3 +1,5 @@
+<h1>Crafters (search)</h1>
+
 <form action="" method="get">
     {{ filter.form.as_p }}
     <input type="submit" />
@@ -5,7 +7,7 @@
 
 <ul>
 {% for crafter in filter.qs %}
-    <li>{{ crafter.user.username }}: {{ crafter.claims }}</li>
+    <li><a href="{{ crafter.get_absolute_url }}">{{ crafter.user.username }}</a>: {{ crafter.claims }}</li>
 {% empty %}
     <li>No crafters yet.</li>
 {% endfor %}

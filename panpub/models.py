@@ -38,6 +38,18 @@ class Crafter(models.Model):
         return claims
 
 
+class Collective(models.Model):
+    name = models.CharField(max_length=100)
+    circles = models.ManyToManyField('self')
+    members = models.ManyToManyField(Crafter)
+
+    def get_absolute_url(self):
+        return reverse('collective_detail', args=[str(self.pk), ])
+
+    def __str__(self):
+        return self.name
+
+
 class Corpus(models.Model):
     name = models.CharField(max_length=100)
     datestamp = models.DateField(null=True)
@@ -46,7 +58,7 @@ class Corpus(models.Model):
     ready = models.BooleanField(default=False)
 
     def get_absolute_url(self):
-        return reverse('Corpus_detail', args=[str(self.pk), ])
+        return reverse('corpus_detail', args=[str(self.pk), ])
 
     def __str__(self):
         return self.name
@@ -96,7 +108,7 @@ class Content(Corpus):
     corpuses = models.ManyToManyField(Corpus, related_name='+')
 
     def get_absolute_url(self):
-        return None
+        return reverse('content_detail', args=[str(self.pk), ])
 
     def __str__(self):
         return self.name
@@ -127,7 +139,7 @@ class Text(Content):
         )
 
     def get_absolute_url(self):
-        return reverse('Text_detail', args=[str(self.pk), ])
+        return reverse('text_detail', args=[str(self.pk), ])
 
     def save(self, *args, **kwargs):
         try:
@@ -199,7 +211,7 @@ class Dataset(Content):
         )
 
     def get_absolute_url(self):
-        return reverse('Dataset_detail', args=[str(self.pk), ])
+        return reverse('dataset_detail', args=[str(self.pk), ])
 
     def save(self, *args, **kwargs):
         pass
@@ -265,7 +277,7 @@ class Picture(Content):
         )
 
     def get_absolute_url(self):
-        return reverse('Picture_detail', args=[str(self.pk), ])
+        return reverse('picture_detail', args=[str(self.pk), ])
 
     def save(self, *args, **kwargs):
         pass

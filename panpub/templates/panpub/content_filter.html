@@ -1,3 +1,5 @@
+<h1>Contents (search)</h1>
+
 <form action="" method="get">
     {{ filter.form.as_p }}
     <input type="submit" />
@@ -5,7 +7,7 @@
 
 <ul>
 {% for content in filter.qs %}
-    <li>{{ content.name }}: {{ content.description }} ({{ content.datestamp.created }}) - {{ content.claims }}</li>
+    <li><a href="{{ content.get_absolute_url }}">{{ content.name }}</a>: {{ content.description }} ({{ content.datestamp.created }}) - {{ content.claims }}</li>
 {% empty %}
     <li>No content yet.</li>
 {% endfor %}

@@ -1,3 +1,5 @@
+<h1>Corpuses (search)</h1>
+
 <form action="" method="get">
     {{ filter.form.as_p }}
     <input type="submit" />
@@ -5,7 +7,7 @@
 
 <ul>
 {% for corpus in filter.qs %}
-    <li>{{ corpus.name }}: {{ corpus.contents }}</li>
+    <li><a href="{{ corpus.get_absolute_url }}">{{ corpus.name }}</a>: {{ corpus.contents }}</li>
 {% empty %}
     <li>No corpus yet.</li>
 {% endfor %}

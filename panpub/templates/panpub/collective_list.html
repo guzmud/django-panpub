@@ -1,0 +1,9 @@
+<h1>Collectives</h1>
+
+<ul>
+{% for collective in collectives %}
+    <li><a href="{{ collective.get_absolute_url }}">{{ collective.name }}</a></li>
+{% empty %}
+    <li>No collective yet.</li>
+{% endfor %}
+</ul>

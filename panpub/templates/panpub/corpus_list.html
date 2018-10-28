@@ -1,6 +1,8 @@
+<h1>Corpuses</h1>
+
 <ul>
 {% for corpus in corpuses %}
-    <li>{{ corpus.name }}: {{ corpus.contents }}</li>
+    <li><a href="{{ corpus.get_absolute_url }}">{{ corpus.name }}</a>: {{ corpus.contents }}</li>
 {% empty %}
     <li>No corpus yet.</li>
 {% endfor %}

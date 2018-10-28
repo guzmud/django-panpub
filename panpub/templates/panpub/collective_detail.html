@@ -1,0 +1,17 @@
+<h1>{{ collective.name }}</h1>
+
+<ul>
+{% for circle in collective.circles.all %}
+<li><a href="{{ circle.get_absolute_url }}">{{ circle.name }}</a></li>
+{% empty %}
+<li>No related to any other collective</li>
+{% endfor %}
+</ul>
+
+<ul>
+{% for member in collective.members.all %}
+<li><a href="{{ member.get_absolute_url }}">{{ member }}</a></li>
+{% empty %}
+<li>No known member of this collective</li>
+{% endfor %}
+</ul>

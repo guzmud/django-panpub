@@ -1,0 +1,14 @@
+<h1>Collectives (search)</h1>
+
+<form action="" method="get">
+    {{ filter.form.as_p }}
+    <input type="submit" />
+</form>
+
+<ul>
+{% for collective in filter.qs %}
+    <li><a href="{{ collective.get_absolute_url }}">{{ collective.name }}</a></li>
+{% empty %}
+    <li>No collective yet.</li>
+{% endfor %}
+</ul>

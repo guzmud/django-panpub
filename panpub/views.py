@@ -13,6 +13,7 @@ from django.views.generic import (
 
 from panpub.models import (
         Crafter,
+        Collective,
         Corpus,
         Content,
         Text,
@@ -29,6 +30,30 @@ class CrafterList(ListView):
 class CrafterDetail(DetailView):
     model = Crafter
     context_object_name = 'crafter'
+
+
+class CollectiveCreate(CreateView):
+    model = Collective
+    fields = ['name',]
+
+
+class CollectiveDelete(DeleteView):
+    model = Collective
+
+
+class CollectiveDetail(DetailView):
+    model = Collective
+    context_object_name = 'collective'
+
+
+class CollectiveUpdate(UpdateView):
+    model = Collective
+
+
+class CollectiveList(ListView):
+    model = Collective
+    context_object_name = 'collectives'
+    paginate_by = 10
 
 
 class CorpusCreate(CreateView):
@@ -55,15 +80,15 @@ class CorpusList(ListView):
     paginate_by = 10
 
 
+class ContentDetail(DetailView):
+    model = Content
+    context_object_name = 'content'
+
+
 class ContentList(ListView):
     model = Content
     context_object_name = 'contents'
     paginate_by = 10
-
-
-class ContentDetail(DetailView):
-    model = Content
-    context_object_name = 'content'
 
 
 class TextCreate(CreateView):

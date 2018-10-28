@@ -8,6 +8,37 @@ from panpub import filters, views
 
 urlpatterns = [
     url(
+        regex="^collective/~create/$",
+        view=views.CollectiveCreate.as_view(),
+        name='collective_create',
+    ),
+    url(
+        regex="^collective/(?P<pk>\d+)/~delete/$",
+        view=views.CollectiveDelete.as_view(),
+        name='collective_delete',
+    ),
+    url(
+        regex="^collective/(?P<pk>\d+)/$",
+        view=views.CollectiveDetail.as_view(),
+        name='collective_detail',
+    ),
+    url(
+        regex="^collective/(?P<pk>\d+)/~update/$",
+        view=views.CollectiveUpdate.as_view(),
+        name='collective_update',
+    ),
+    url(
+        regex="^collective/search/$",
+        view=FilterView.as_view(filterset_class=filters.CollectiveFilter),
+        name='collective_search',
+    ),
+    url(
+        regex="^collective/$",
+        view=views.CollectiveList.as_view(),
+        name='collective_list',
+    ),
+
+    url(
         regex="^crafter/(?P<pk>\d+)/$",
         view=views.CrafterDetail.as_view(),
         name='crafter_detail',

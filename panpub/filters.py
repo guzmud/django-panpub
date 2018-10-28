@@ -3,7 +3,14 @@
 
 import django_filters
 
-from panpub.models import Crafter, Corpus, Content, Text
+from panpub.models import Crafter, Corpus, Content, Text, Collective
+
+
+class CollectiveFilter(django_filters.FilterSet):
+    class Meta:
+        model = Collective
+        fields = ['name',
+                  ]
 
 
 class CrafterFilter(django_filters.FilterSet):

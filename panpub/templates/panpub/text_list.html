@@ -1,6 +1,8 @@
+<h1>Texts</h1>
+
 <ul>
 {% for text in texts %}
-    <li>{{ text.name }}: {{ text.description }} ({{ text.datestamp.created }}) - {{ text.claims }}</li>
+    <li><a href="{{ text.get_absolute_url }}">{{ text.name }}</a>: {{ text.description }} ({{ text.datestamp.created }}) - {{ text.claims }}</li>
 {% empty %}
     <li>No text yet.</li>
 {% endfor %}
