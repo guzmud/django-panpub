@@ -48,7 +48,7 @@ class CrafterList(ListView):
 
 class CollectiveCreate(CreateView):
     model = Collective
-    fields = ['name',]
+    fields = ['name', 'circles', 'members']
 
 
 class CollectiveDelete(DeleteView):

@@ -1,7 +1,41 @@
+{% load panpub_tags %}
+
 <h1>{{ crafter.user.username }}</h1>
 
+<h2>Collectives</h2>
+<ul>
+{% for collective in crafter.collectives %}
+<li><a href="{{ collective.get_absolute_url }}">{{ collective }}</a></li>
+{% empty %}
+<li>This crafter is not part of any collective yet.</li>
+{% endfor %}
+</ul>
+
+<h2>Claims</h2>
 <ul>
 {% for claim in crafter.claims %}
-    <li>{{ claim }}</li>
+<li>{{ claim }}</li>
+{% empty %}
+<li>This crafter has no claims yet.</li>
+{% endfor %}
+</ul>
+
+<h2>Crafterworks</h2>
+<ul>
+{% crafterworks crafter.pk as works %}
+{% for work in works %}
+<li><a href="{{ work.get_absolute_url }}">{{ work }}</a></li>
+{% empty %}
+<li>No work linked to this crafter yet.</li>
+{% endfor %}
+</ul>
+
+<h2>Craftertexts</h2>
+<ul>
+{% craftertexts crafter.pk as texts %}
+{% for text in texts %}
+<li><a href="{{ text.get_absolute_url }}">{{ text }}</a></li>
+{% empty %}
+<li>No text linked to this crafter yet.</li>
 {% endfor %}
 </ul>

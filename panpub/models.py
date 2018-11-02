@@ -31,17 +31,24 @@ class Crafter(models.Model):
     def __str__(self):
         return str(self.user)
 
+    def get_absolute_url(self):
+        return reverse('crafter_detail', args=[str(self.pk), ])
+
     def claims(self, claim_type=None):
         claims = Claim.objects.filter(crafter=self)
         if claim_type in ['CRT', 'CUR', 'MED']:
             claims = claims.filter(claim_type=claim_type)
         return claims
 
+    def collectives(self):
+        collectives = Collective.objects.filter(members__in=[self, ])
+        return collectives
+
 
 class Collective(models.Model):
     name = models.CharField(max_length=100)
-    circles = models.ManyToManyField('self')
-    members = models.ManyToManyField(Crafter)
+    circles = models.ManyToManyField('self', blank=True)
+    members = models.ManyToManyField(Crafter, blank=True)
 
     def get_absolute_url(self):
         return reverse('collective_detail', args=[str(self.pk), ])
