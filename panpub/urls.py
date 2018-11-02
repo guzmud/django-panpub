@@ -8,6 +8,11 @@ from panpub import filters, views
 
 urlpatterns = [
     url(
+        regex="^$",
+        view=views.panpub_base,
+        name='panpub_base',
+    ),
+    url(
         regex="^collective/~create/$",
         view=views.CollectiveCreate.as_view(),
         name='collective_create',
@@ -39,9 +44,24 @@ urlpatterns = [
     ),
 
     url(
+        regex="^crafter/~create/$",
+        view=views.CrafterCreate.as_view(),
+        name='crafter_create',
+    ),
+    url(
+        regex="^crafter/(?P<pk>\d+)/~delete/$",
+        view=views.CrafterDelete.as_view(),
+        name='crafter_delete',
+    ),
+    url(
         regex="^crafter/(?P<pk>\d+)/$",
         view=views.CrafterDetail.as_view(),
         name='crafter_detail',
+    ),
+    url(
+        regex="^crafter/(?P<pk>\d+)/~update/$",
+        view=views.CrafterUpdate.as_view(),
+        name='crafter_update',
     ),
     url(
         regex="^crafter/search/$",

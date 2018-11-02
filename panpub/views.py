@@ -3,6 +3,7 @@
 
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
+from django.shortcuts import render
 from django.views.generic import (
     CreateView,
     DeleteView,
@@ -21,15 +22,28 @@ from panpub.models import (
 from panpub import utils
 
 
-class CrafterList(ListView):
+class CrafterCreate(CreateView):
     model = Crafter
-    context_object_name = 'crafters'
-    paginate_by = 10
+    fields = ['user',]
+
+
+class CrafterDelete(DeleteView):
+    model = Crafter
 
 
 class CrafterDetail(DetailView):
     model = Crafter
     context_object_name = 'crafter'
+
+
+class CrafterUpdate(UpdateView):
+    model = Crafter
+
+
+class CrafterList(ListView):
+    model = Crafter
+    context_object_name = 'crafters'
+    paginate_by = 10
 
 
 class CollectiveCreate(CreateView):
@@ -142,3 +156,7 @@ def panpub_export(request):
                                           pplen,
                                           'application/x-gzip')
     return response
+
+
+def panpub_base(request):
+    return render(request, 'panpub/panpub_base.html')

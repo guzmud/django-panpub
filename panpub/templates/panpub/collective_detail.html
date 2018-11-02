@@ -4,7 +4,7 @@
 {% for circle in collective.circles.all %}
 <li><a href="{{ circle.get_absolute_url }}">{{ circle.name }}</a></li>
 {% empty %}
-<li>No related to any other collective</li>
+<li>Not related to any other collective</li>
 {% endfor %}
 </ul>
 
