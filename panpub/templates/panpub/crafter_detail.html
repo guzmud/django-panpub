@@ -1,5 +1,8 @@
+{% extends "base.html" %}
+{% load static %}
 {% load panpub_tags %}
 
+{% block content %}
 <h1>{{ crafter.user.username }}</h1>
 
 <h2>Collectives</h2>
@@ -39,3 +42,4 @@
 <li>No text linked to this crafter yet.</li>
 {% endfor %}
 </ul>
+{% endblock %}

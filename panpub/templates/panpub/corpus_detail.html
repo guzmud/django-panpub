@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
 <h1>{{ corpus.name }}</h1>
 
 <p>{{ corpus.description }}</p>
@@ -9,3 +13,4 @@
     <li>No content in this corpus yet.</li>
 {% endfor %}
 </ul>
+{% endblock content %}

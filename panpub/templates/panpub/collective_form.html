@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
 <h1>Register new collective</h1>
 
 <form method="post" enctype='multipart/form-data'>
@@ -5,3 +9,4 @@
     {{ form.as_p }}
     <input type="submit" value="Save" />
 </form>
+{% endblock content %}

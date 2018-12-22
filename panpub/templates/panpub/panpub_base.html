@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
 <h1>Panpub</h1>
 
 <ul>
@@ -8,3 +12,4 @@
 <li><a href="{% url 'text_list' %}">Texts</a></li>
 <li><a href="{% url 'panpub_export' %}">Global export</a></li>
 </ul>
+{% endblock content %}

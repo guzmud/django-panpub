@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
 <h1>{{ collective.name }}</h1>
 
 <ul>
@@ -15,3 +19,4 @@
 <li>No known member of this collective</li>
 {% endfor %}
 </ul>
+{% endblock content %}
