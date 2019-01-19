@@ -48,7 +48,7 @@ class CrafterList(ListView):
 
 class CollectiveCreate(CreateView):
     model = Collective
-    fields = ['name', 'circles', 'members']
+    fields = ['name', 'circles', 'members', 'manifeste']
 
 
 class CollectiveDelete(DeleteView):
@@ -72,7 +72,7 @@ class CollectiveList(ListView):
 
 class CorpusCreate(CreateView):
     model = Corpus
-    fields = ['name', 'datestamp', 'description']
+    fields = ['name', 'datestamp', 'description', 'is_exhibit']
 
 
 class CorpusDelete(DeleteView):

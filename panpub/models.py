@@ -47,8 +47,15 @@ class Crafter(models.Model):
 
 class Collective(models.Model):
     name = models.CharField(max_length=100)
-    circles = models.ManyToManyField('self', blank=True)
-    members = models.ManyToManyField(Crafter, blank=True)
+    circles = models.ManyToManyField('self',
+                                     blank=True)
+    members = models.ManyToManyField(Crafter,
+                                     blank=True)
+    manifeste = models.ForeignKey('Text',
+                                  models.SET_NULL,
+                                  blank=True,
+                                  null=True,
+                                  )
 
     def get_absolute_url(self):
         return reverse('collective_detail', args=[str(self.pk), ])
@@ -63,6 +70,7 @@ class Corpus(models.Model):
     description = models.TextField(blank=True)
     license = models.CharField(max_length=100)
     ready = models.BooleanField(default=False)
+    is_exhibit = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('corpus_detail', args=[str(self.pk), ])

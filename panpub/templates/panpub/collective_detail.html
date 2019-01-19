@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
+{% load markdown_deux_tags %}
 
 {% block content %}
 <h1>{{ collective.name }}</h1>
 
+<h2>Circles</h2>
 <ul>
 {% for circle in collective.circles.all %}
 <li><a href="{{ circle.get_absolute_url }}">{{ circle.name }}</a></li>
@@ -12,6 +14,7 @@
 {% endfor %}
 </ul>
 
+<h2>Members</h2>
 <ul>
 {% for member in collective.members.all %}
 <li><a href="{{ member.get_absolute_url }}">{{ member }}</a></li>
@@ -19,4 +22,14 @@
 <li>No known member of this collective</li>
 {% endfor %}
 </ul>
+
+{% if collective.manifeste %}
+<h2>Manifeste: {{ collective.manifeste.name }}</h2>
+
+<p class="description">{{ collective.manifeste.description }} ({{ collective.manifeste.datestamp.created }})</p>
+
+<p>{{ collective.manifeste.claims }}</p>
+
+{{ collective.manifeste.document.read|markdown }}
+{% endif %}
 {% endblock content %}
