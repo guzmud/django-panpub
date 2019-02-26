@@ -229,9 +229,13 @@ def work_random(request):
 
 def work_details(request, pk):
     work = get_object_or_404(Content, pk=pk)
+
+    similar_works = Content.objects.exclude(pk=work.pk).filter(tags__in=work.tags.all())
+
     return render(request,
                   'panpub/work_details.html',
                   {'work': work,
+                   'similar_works': similar_works,
                   })
 
 
