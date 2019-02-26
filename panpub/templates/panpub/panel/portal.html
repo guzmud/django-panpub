@@ -1,0 +1,105 @@
+{% load panpub_tags %}
+
+{% if collective %}
+<div class="grid-x">
+  <div class="cell small-3 right" data-sticky-container style="margin-top: 1rem;">
+    <div class="sticky" data-sticky data-anchor="workdisplay" data-stick-to="bottom">
+      <div class="grid-y">
+        <div class="cell" style="border: 0.2rem solid {{ platform.main_color }}; border-radius: 5px; padding: 0.5rem; margin-right: 1rem; box-shadow: 5px 5px 8px #888888; margin-bottom: 1rem;">
+        <h4 style="font-variant: small-caps;">{{ collective.name }}</h4>
+        <ul class="stats-list" style="margin-bottom: 0rem;">
+        {% with members=collective.members.all|length works=collective.works|length claims=collective.claims|length %}
+        <li>{{ works }} <span class="stats-list-label">Work{{ works|pluralize }}</span></li>
+        <li>{{ claims }} <span class="stats-list-label">Claim{{ claims|pluralize }}</span></li>
+        <li>{{ members }} <span class="stats-list-label">Member{{ members|pluralize }}</span></li>
+        {% endwith %}
+        </ul>
+        </div>
+
+        {% if collective.latest_works %}
+          <div class="cell" style="border: 0.2rem solid {{ platform.main_color }}; border-radius: 5px; padding: 0.5rem; margin-right: 1rem; box-shadow: 5px 5px 8px #888888; margin-bottom: 1rem;">
+            <h4 style="font-variant: small-caps;">Latest works</h4>
+            <ul style="list-style: none;">
+            {% for work in collective.latest_works %}
+              <li><a href="{{ work.get_absolute_url }}"><i class="fas fa-{% workicon work.worktype %}"></i>&nbsp;{{ work }}</a></li>
+            {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if collective.latest_members %}
+          <div class="cell" style="border: 0.2rem solid {{ platform.main_color }}; border-radius: 5px; padding: 0.5rem; margin-right: 1rem; box-shadow: 5px 5px 8px #888888; margin-bottom: 1rem;">
+            <h4 style="font-variant: small-caps;">Latest members</h4>
+            <ul style="list-style: none;">
+            {% for member in collective.latest_members %}
+              <li><a href="{{ member.get_absolute_url }}"><i class="fas fa-{{ member.fa_icon }}"></i>&nbsp;{{ member }}</a></li>
+            {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <div class="cell small-9" id="workdisplay" style="margin-top: 1rem;">
+{% comment %}
+  {% if collective.latest_exhibits %}
+    <div>
+      <div class="tabs-content" data-tabs-content="exhibit-tabs">
+        {% for exhibit in collective.latest_exhibits %}
+          <div class="tabs-panel{% if forloop.first %} is-active{% endif %}" id="exhibit{{ forloop.counter }}">
+            {{ exhibit }}
+          </div>
+        {% endfor %}
+    </div>
+    <div>
+      <ul class="tabs" data-tabs id="exhibit-tabs">
+        {% for exhibit in collective.latest_exhibits %}
+          <li class="tabs-title{% if forloop.first %} is-active{% endif %}"><a data-tabs-target="exhibit{{ forloop.counter }}" href="#exhibit{{ forloop.counter }}">Tab {{ forloop.counter }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+{% endcomment %}
+
+{% comment %}
+    <div class="ecommerce-hero-slider-small orbit" role="region" aria-label="Favorite Space Pictures" data-orbit>
+      <ul class="orbit-container">
+        <button class="orbit-previous"><span class="show-for-sr">Previous Slide</span>&#9664;&#xFE0E;</button>
+        <button class="orbit-next"><span class="show-for-sr">Next Slide</span>&#9654;&#xFE0E;</button>
+
+        {% for exhibit in collective.latest_exhibits %}
+          <li class="{% if forloop.first %}is-active {% endif %}orbit-slide">
+            <div class="hero-slider-slide">
+              <div class="row">
+                <div class="small-12 medium-9 columns">
+                  <div class="hero-slider-slide-content">
+                    <h3>{{ exhibit.name }}</h3>
+                    <p>{{ exhibit.description }}</p>
+                    <div>
+                      <button class="hollow button" type="button"><img src="https://placehold.it/20x20"/> Watch Video</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+      <nav class="orbit-bullets">
+      {% for exhibit in exhibits %}
+        <button {% if forloop.first %}class="is-active"{% endif %} data-slide="{{ forloop.counter0 }}"><span class="show-for-sr">Slide {{ forloop.counter0 }}.</span></button>
+      {% endfor %}
+      </nav>
+    </div>
+{% endcomment %}
+
+    <div>
+    {% text_display collective.manifeste %}
+    </div>
+
+  </div>
+</div>
+{% else %}
+{% endif %}

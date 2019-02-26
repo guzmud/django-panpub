@@ -10,6 +10,7 @@ from django.core.management import call_command
 from django.http import HttpResponse
 
 from panpub.models import PANPUB_MEDIA
+from panpub import references as refs
 
 
 FORMAT_TYPE_MATRICE = {
@@ -19,7 +20,58 @@ FORMAT_TYPE_MATRICE = {
     'epub': 'application/epub+zip',
     'html': 'text/html',
     'odt': 'application/vnd.oasis.opendocument.text',
+    'bmp': 'image/bmp',
+    'eps': 'image/eps',
+    'gif': 'image/gif',
+    'jpeg': 'image/jpeg',
+    'jpeg2000': 'image/jpeg',
+    'png': 'image/png',
+    'ppm': 'image/x-portable-pixmap',
+    'tga': 'image/x-tga',
+    'tiff': 'image/tiff',
+    'webp': 'image/webp',
+    'pdf': 'application/pdf',
     }
+
+
+def worktypes(include_content=True):
+    wtypes = ['image', 'text', 'audio', 'video', 'corpus']
+    if include_content:
+        wtypes.append('content')
+    return wtypes
+
+
+def worktype_class(worktype):
+    from panpub.models import Image, Text, Audio, Video, Corpus
+    workclass_table = {'image': Image,
+                       'text': Text,
+                       'audio': Audio,
+                       'video': Video,
+                       'corpus': Corpus,
+                       }
+    return workclass_table.get(worktype, None)
+
+
+def worktypes_choice():
+    return [(k, k) for k in worktypes() if k != 'content']
+
+
+def worktype_icon(worktype):
+    wtype_icons = {'corpus': 'layer-group',
+                   'audio': 'headphones',
+                   'video': 'video',
+                   'image': 'image',
+                   'text': 'book-open',
+                   }
+    return wtype_icons.get(worktype, None)
+
+
+def worktype_inputtype(worktype):
+    if worktype == 'text':
+        return refs.text_upformats
+    elif worktype == 'image':
+        return refs.image_upformats
+    return list()
 
 
 def xprformat_to_ctntype(export_format):

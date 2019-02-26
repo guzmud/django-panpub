@@ -1,5 +1,8 @@
+django-colorful
 django-filter
 django-markdown-deux
+django-tagulous
+Pillow
 pypandoc
 tablib[pandas]
 ujson

@@ -1,165 +1,134 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from django.conf.urls import url
+from django.conf.urls import url 
+from django.contrib.auth import views as auth_views
 
-from django_filters.views import FilterView
+from panpub import views
+from panpub import genericviews as gviews
+from panpub.models import Platform
 
-from panpub import filters, views
+
+p = Platform.load()
+
+if (p and p.use_portal) or (p is None):
+    portal_regex = '^$'  # elif not p and not use_portal
+else:
+    portal_regex = '^op/portal/$'
 
 urlpatterns = [
-    url(
-        regex="^$",
-        view=views.panpub_base,
-        name='panpub_base',
+    url(portal_regex,
+        views.portal,
+        name='portal',
     ),
-    url(
-        regex="^collective/~create/$",
-        view=views.CollectiveCreate.as_view(),
+
+    url("^op/configure/$",
+        views.platform_configure,
+        name='platform_configure',
+    ),
+    url("^collective/edit/$",
+        views.collective_edit,
+        name='collective_edit',
+    ),
+    url("^crafters/register/$",
+        views.crafter_register,
+        name='crafter_register',
+    ),
+
+    url("^collectives/~create/$",
+        gviews.CollectiveCreate.as_view(),
         name='collective_create',
     ),
-    url(
-        regex="^collective/(?P<pk>\d+)/~delete/$",
-        view=views.CollectiveDelete.as_view(),
+    url("^collectives/(?P<pk>\d+)/~delete/$",
+        gviews.CollectiveDelete.as_view(),
         name='collective_delete',
     ),
-    url(
-        regex="^collective/(?P<pk>\d+)/$",
-        view=views.CollectiveDetail.as_view(),
+    url("^collectives/(?P<pk>\d+)/$",
+        gviews.CollectiveDetail.as_view(),
         name='collective_detail',
     ),
-    url(
-        regex="^collective/(?P<pk>\d+)/~update/$",
-        view=views.CollectiveUpdate.as_view(),
+    url("^collectives/(?P<pk>\d+)/~update/$",
+        gviews.CollectiveUpdate.as_view(),
         name='collective_update',
     ),
-    url(
-        regex="^collective/search/$",
-        view=FilterView.as_view(filterset_class=filters.CollectiveFilter),
-        name='collective_search',
-    ),
-    url(
-        regex="^collective/$",
-        view=views.CollectiveList.as_view(),
-        name='collective_list',
-    ),
 
-    url(
-        regex="^crafter/~create/$",
-        view=views.CrafterCreate.as_view(),
+    url("^crafters/~create/$",
+        gviews.CrafterCreate.as_view(),
         name='crafter_create',
     ),
-    url(
-        regex="^crafter/(?P<pk>\d+)/~delete/$",
-        view=views.CrafterDelete.as_view(),
+    url("^crafters/(?P<pk>\d+)/~delete/$",
+        gviews.CrafterDelete.as_view(),
         name='crafter_delete',
     ),
-    url(
-        regex="^crafter/(?P<pk>\d+)/$",
-        view=views.CrafterDetail.as_view(),
+    url("^crafters/(?P<pk>\d+)/$",
+        gviews.CrafterDetail.as_view(),
         name='crafter_detail',
     ),
-    url(
-        regex="^crafter/(?P<pk>\d+)/~update/$",
-        view=views.CrafterUpdate.as_view(),
+    url("^crafters/(?P<pk>\d+)/~update/$",
+        gviews.CrafterUpdate.as_view(),
         name='crafter_update',
     ),
-    url(
-        regex="^crafter/search/$",
-        view=FilterView.as_view(filterset_class=filters.CrafterFilter),
-        name='crafter_search',
+
+    url('^works/random/$',
+        views.work_random,
+        name='work_random',
     ),
-    url(
-        regex="^crafter/$",
-        view=views.CrafterList.as_view(),
-        name='crafter_list',
+    url("^works/(?P<pk>\d+)/$",
+        views.work_details,
+        name='work_details',
+    ),
+    url("^works/(?P<pk>\d+)/~delete/$",
+        gviews.ContentDelete.as_view(),
+        name='work_delete',
+    ),
+    url("^works/(?P<pk>\d+)/~update/$",
+        gviews.ContentUpdate.as_view(),
+        name='work_update',
+    ),
+    url("^works/(?P<pk>\d+)/~mediate/$",
+        gviews.ContentMediate.as_view(),
+        name='work_mediate',
+    ),
+    url("^works/(?P<pk>\d+)/export/$",
+        views.work_export_form,
+        name='work_export_form',
+    ),
+    url("^works/upload/$",
+        views.work_upload,
+        name='work_upload',
+    ),
+    url("^works/corpus/$",
+        views.corpus_assemble,
+        name='corpus_assemble',
     ),
 
-    url(
-        regex="^corpus/~create/$",
-        view=views.CorpusCreate.as_view(),
-        name='corpus_create',
+    url('^op/contact/$',
+        views.contact_form,
+        name='contact_form',
     ),
-    url(
-        regex="^corpus/(?P<pk>\d+)/~delete/$",
-        view=views.CorpusDelete.as_view(),
-        name='corpus_delete',
-    ),
-    url(
-        regex="^corpus/(?P<pk>\d+)/$",
-        view=views.CorpusDetail.as_view(),
-        name='corpus_detail',
-    ),
-    url(
-        regex="^corpus/(?P<pk>\d+)/~update/$",
-        view=views.CorpusUpdate.as_view(),
-        name='corpus_update',
-    ),
-    url(
-        regex="^corpus/search/$",
-        view=FilterView.as_view(filterset_class=filters.CorpusFilter),
-        name='corpus_search',
-    ),
-    url(
-        regex="^corpus/$",
-        view=views.CorpusList.as_view(),
-        name='corpus_list',
-    ),
-
-    url(
-        regex="^content/(?P<pk>\d+)/$",
-        view=views.ContentDetail.as_view(),
-        name='content_detail',
-    ),
-    url(
-        regex="^content/search/$",
-        view=FilterView.as_view(filterset_class=filters.ContentFilter),
-        name='content_search',
-    ),
-    url(
-        regex="^content/$",
-        view=views.ContentList.as_view(),
-        name='content_list',
-    ),
-
-    url(
-        regex="^text/~create/$",
-        view=views.TextCreate.as_view(),
-        name='text_create',
-    ),
-    url(
-        regex="^text/(?P<pk>\d+)/~delete/$",
-        view=views.TextDelete.as_view(),
-        name='text_delete',
-    ),
-    url(
-        regex="^text/(?P<pk>\d+)/$",
-        view=views.TextDetail.as_view(),
-        name='text_detail',
-    ),
-    url(
-        regex="^text/(?P<pk>\d+)/~update/$",
-        view=views.TextUpdate.as_view(),
-        name='text_update',
-    ),
-    url(
-        regex="^text/(?P<text_id>\d+)/export/(?P<export_format>\w+)/$",
-        view=views.text_export,
-        name='text_export',
-    ),
-    url(
-        regex="^text/search/$",
-        view=FilterView.as_view(filterset_class=filters.TextFilter),
-        name='text_search',
-    ),
-    url(
-        regex="^text/$",
-        view=views.TextList.as_view(),
-        name='text_list',
-    ),
-
-    url(
-        regex="op/export/$",
-        view=views.panpub_export,
+    url("^op/export/$",
+        views.panpub_export,
         name='panpub_export',
     ),
+    url("^op/load-inputtypes/",
+        views.load_inputtypes,
+        name="load_inputtypes",
+    ),
+]
+
+if p and p.use_portal:
+    urlpatterns += [
+        url(r'^profile/$',
+            views.profile_edit,
+            name='profile_edit',
+            ),
+        url(r'^login/$',
+            auth_views.login,
+            {'template_name': 'panpub/accounts/login.html'},
+            name='login',
+            ),
+        url(r'^logout/$',
+            auth_views.logout,
+            {'next_page': '/'},
+            name='logout',
+            ),
 ]

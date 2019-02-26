@@ -1,0 +1,81 @@
+{% load panpub_tags %}
+<div class="cartouche">
+  <div class="news-card-tag">
+  {% if tags %}
+    {% for tag in tags %}
+    <a href="/?tags__name={{ tag }}&anchor=works" class="button" style="padding: 0.3rem; font-size: 0.8rem;"><b><i class="fas fa-tag"></i>&nbsp;{{ tag }}</b></a></span>
+    {% endfor %}
+  {% endif %}
+  </div>
+
+  {{ work.tags.similar_objects }}
+
+  <div style="text-align: left; align-items: top; padding-top: 0.5rem; padding-bottom: 1rem;">
+    <i class="fas fa-{% workicon work.worktype %} fa-3x fa-pull-left" style="color: {{ color }};"></i>
+    <h3 style="padding-left: 1rem; font-variant: small-caps;">{{ work.name }}</h3>
+  </div>
+
+  <h5 style="font-size: 0.9rem;">{{ work.created_at|date:"Y-m-d" }} (updated {{ work.updated_at|date:"Y-m-d" }})</h5>
+
+  <p><i>{{ work.description }}</i></p>
+
+  <ul style="list-style: none; margin: 0.1rem auto;">
+    {% if creators %}
+    <li style="margin: 0.1rem auto;">Creator{{ creators|pluralize }}:
+    {% for crafter in creators %}
+      <span data-tooltip tabindex="1" title="{{ crafter }}"><a href="{{ crafter.get_absolute_url }}"><i class="fas fa-{{ crafter.fa_icon }}"></i></a></span>&nbsp;
+    {% endfor %}
+    </li>
+    {% endif %}
+
+    {% if curators %}
+    <li style="margin: 0.1rem auto;">Curator{{ curators|pluralize }}:
+    {% for crafter in curators %}
+      <span data-tooltip tabindex="1" title="{{ crafter }}"><a href="{{ crafter.get_absolute_url }}"><i class="fas fa-{{ crafter.fa_icon }} fa-sm"></i></a></span>&nbsp;
+    {% endfor %}
+    </li>
+    {% endif %}
+
+    {% if mediators %}
+    <li style="margin: 0.1rem auto;">Mediator{{ mediators|pluralize }}:
+    {% for crafter in mediators %}
+      <span data-tooltip tabindex="1" title="{{ crafter }}"><a href="{{ crafter.get_absolute_url }}"><i class="fas fa-{{ crafter.fa_icon }} fa-sm"></i></a></span>&nbsp;
+    {% endfor %}
+    </li>
+    {% endif %}
+  </ul>
+
+  {% autoescape off %}
+    {% license_tag work.license %}
+  {% endautoescape %}
+
+  <div style="margin-top: 0.5rem;">
+    {% if export_form %}
+    <button class="button small" data-open="export-reveal"><i class="fas fa-file-download"></i>&nbsp;<b>Export</b></button>
+    <div class="small reveal" id="export-reveal" data-reveal data-position="top" data-alignement="center" data-close-on-click="true" data-animation-in="slide-in-down" data-animation-out="slide-out-up">
+      {% include 'panpub/modal/export.html' %}
+    </div>
+    {% endif %}
+
+    {% if mediate_form %}
+    <button class="button small" data-open="mediate-reveal"><i class="fas fa-edit"></i>&nbsp;<b>Mediate</b></button>
+    <div class="small reveal" id="mediate-reveal" data-reveal data-position="top" data-alignement="center" data-close-on-click="true" data-animation-in="slide-in-down" data-animation-out="slide-out-up">
+      {% include 'panpub/modal/mediate.html' %}
+    </div>
+    {% endif %}
+
+    {% if update_form %}
+    <button class="button small" data-open="update-reveal"><i class="fas fa-edit"></i>&nbsp;<b>Update</b></button>
+    <div class="reveal small" id="update-reveal" data-reveal data-position="top" data-alignement="center" data-close-on-click="true" data-animation-in="slide-in-down" data-animation-out="slide-out-up">
+      {% include 'panpub/modal/update.html' %}
+    </div>
+    {% endif %}
+
+    {% if delete_form %}
+    <button class="button small" data-open="delete-reveal"><i class="fas fa-trash"></i>&nbsp;<b>Delete</b></button>
+    <div class="small reveal" id="delete-reveal" data-reveal data-position="top" data-alignement="center" data-close-on-click="true" data-animation-in="slide-in-down" data-animation-out="slide-out-up">
+      {% include 'panpub/modal/delete.html' %}
+    </div>
+    {% endif %}
+  </div>
+</div>

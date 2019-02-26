@@ -1,9 +1,12 @@
-{% extends "base.html" %}
+{% extends override_base|default:"base.html" %}
 {% load static %}
 {% load panpub_tags %}
 
 {% block content %}
 <h1>{{ crafter.user.username }}</h1>
+
+<a href="{% url 'crafter_update' crafter.pk %}" class="button-hover button"><span>Edit</span><i class="fas fa-pen"></i></a>
+<a href="{% url 'crafter_delete' crafter.pk %}" class="button-hover button"><span>Delete</span><i class="fas fa-trash"></i></a>
 
 <h2>Collectives</h2>
 <ul>

@@ -1,0 +1,22 @@
+<h3>Export <i>{{ work.name }}</i></h3>
+
+<div class="grid-x">
+  <div class="cell small-1">
+    <i class="fas fa-file-download fa-2x"></i>
+  </div>
+  <div class="cell auto">
+    <form action="{% url 'work_export_form' work.pk %}" class="input-group" method="post">
+      {% csrf_token %}
+      <div class="input-group">
+      {% for field in export_form %}
+        <span class="input-group-label">Pick an export format</span>
+        {{ field }}
+      {% endfor %}
+      <div class="input-group-button">
+        <input type="submit" value="Download" class="button small">
+      </div>
+      </div>
+    </form>
+  </div>
+</div>
+<button class="close-button" data-close aria-label="Close reveal" type="button"><span aria-hidden="true">&times;</span></button>

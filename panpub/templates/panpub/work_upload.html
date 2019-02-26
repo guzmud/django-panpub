@@ -1,0 +1,40 @@
+{% extends override_base|default:"base.html" %}
+{% load static %}
+
+{% block content %}
+<h3>Upload a new work</h3>
+{% comment %}
+<form action="{% url 'work_upload' %}" method="post" id="uploadForm">
+{% endcomment %}
+<form method="post" id="uploadForm" inputtypes-url="{% url 'load_inputtypes' %}" novalidate enctype='multipart/form-data'>
+  {% csrf_token %}
+  <div class="grid-x grid-padding-x align-center-middle text-center" style="max-width: 80%; margin-right: auto; margin-left: auto;">
+    {% for field in upload_form %}
+      <div class="medium-4 cell">{{ field.errors }} <label for="{{ field.id_for_label }}" style="font-weight: bold; font-variant: small-caps;">{{ field.label }} </label>{{ field }}</div>
+    {% endfor %}
+    <div class="cell">
+      <input type="submit" class="button submit-button" value="Submit">
+    </div>
+  </div>
+</form>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#id_worktype").change(function () {
+      var url = $("#uploadForm").attr("inputtypes-url");
+      var worktypeId = $(this).val();
+
+      $.ajax({
+        url: url,
+        data: {
+          'worktype': worktypeId
+        },
+        success: function (data) {
+          $("#id_input_type").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+  </script>
+
+{% endblock %}

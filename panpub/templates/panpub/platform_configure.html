@@ -1,0 +1,18 @@
+{% extends override_base|default:"base.html" %}
+{% load static %}
+{% load panpub_tags %}
+
+{% block content %}
+<h3>Reconfigure platform</h3>
+<form action="{% url 'platform_configure' %}" method="post">
+  {% csrf_token %}
+  <div class="grid-x grid-padding-x align-center-middle text-center" style="max-width: 80%; margin-right: auto; margin-left: auto;">
+    {% for field in platform_form %}
+      <div class="medium-4 cell">{{ field.errors }} <label for="{{ field.id_for_label }}" style="font-weight: bold; font-variant: small-caps;">{{ field.label }} </label>{{ field }}</div>
+    {% endfor %}
+    <div class="cell">
+      <input type="submit" class="button submit-button" value="Submit">
+    </div>
+  </div>
+</form>
+{% endblock %}

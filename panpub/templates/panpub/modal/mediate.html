@@ -1,0 +1,13 @@
+<div class="grid-x">
+  <div class="cell">
+    <h3>Mediate <i>{{ work.name }}</i></h3>
+  </div>
+  <form action="{% url 'work_mediate' work.pk %}" class="input-group" method="post">
+    {% csrf_token %}
+    {% for field in mediate_form %}
+      <div class="cell">{{ field }}</div>
+    {% endfor %}
+    <div class="cell"><input type="submit" value="Edit" class="button small"></div>
+  </form>
+</div>
+<button class="close-button" data-close aria-label="Close reveal" type="button"><span aria-hidden="true">&times;</span></button>

@@ -2,7 +2,7 @@
 from functools import wraps
 from django.core.exceptions import PermissionDenied
 
-from .models import Claim, Content
+from panpub.models import Claim, Content
 
 
 def _test_claim(content_pk, crafter, claim_type=None):

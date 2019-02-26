@@ -1,0 +1,50 @@
+{% extends 'panpub/portal.html' %}
+
+{% block content %}
+<form action="{% url 'portal' %}" method="post">
+  {% csrf_token %}
+<div class="grid-x" style="margin: 0.2rem;">
+  <div class="cell medium-4">
+  <h3>The first crafter</h3>
+    <div class="grid-x" style="margin: 0.3rem 1rem;">
+    {% for field in crafter_deploy %}
+    {% if field.errors %}
+    <div class="cell">{{ field.errors }}</div>
+    {% endif %}
+    <div class="small-3 cell"><label for="{{ field.id_for_label}}" class="middle" style="text-align: center;">{{ field.label }}</label></div>
+    <div class="small-9 cell">{{ field }}</div>
+    {% endfor %}
+    </div>
+  </div>
+
+  <div class="cell medium-4">
+  <h3>The new collective</h3>
+    <div class="grid-x" style="margin: 0.3rem 1rem;">
+    {% for field in collective_deploy %}
+    {% if field.errors %}
+    <div class="cell">{{ field.errors }}</div>
+    {% endif %}
+    <div class="small-3 cell"><label for="{{ field.id_for_label}}" class="middle" style="text-align: center;">{{ field.label }}</label></div>
+    <div class="small-9 cell">{{ field }}</div>
+    {% endfor %}
+    </div>
+  </div>
+
+  <div class="cell medium-4">
+  <h3>The platform settings</h3>
+    <div class="grid-x" style="margin: 0.3rem 1rem;">
+    {% for field in platform_deploy %}
+    {% if field.errors %}
+    <div class="cell">{{ field.errors }}</div>
+    {% endif %}
+    <div class="small-3 cell"><label for="{{ field.id_for_label}}" class="middle" style="text-align: center;">{{ field.label }}</label></div>
+    <div class="small-9 cell">{{ field }}</div>
+    {% endfor %}
+    </div>
+  </div>
+  <div class="cell small-2 small-offset-5" style="margin-top: 0.5rem;">
+    <input type="submit" class="button" value="Submit" style="width: 100%;">
+  </div>
+</div>
+</form>
+{% endblock %}

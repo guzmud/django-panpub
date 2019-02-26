@@ -1,0 +1,154 @@
+{% load static %}
+{% load panpub_tags %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="{% static 'css/all.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/foundation.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/django_panpub.css' %}" rel="stylesheet" media="screen">
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+
+    <title>{{ platform.get_name }}{% block title %}{% endblock title %}</title>
+
+    {% recolor_css platform %}
+  </head>
+
+  <body>
+  <a id="top"></a>
+  <div data-sticky-container>
+    <div class="title-bar" data-sticky data-options="marginTop:0;" style="width: 100%; background: #000000;">
+      <div class="title-bar-left">
+        <ul class="menu tabs" data-tabs id="collapsing-tabs" style="border: none; background: inherit; float: left !important;">
+          <li style="padding-left: 1rem; padding-right: 1rem;">
+            <form action="/" method="get">
+              <input class="input-group-field" type="text" id="id_tags__name" name="tags__name" value="{{ search_value|default:'' }}" placeholder="Search by tags ..." style="height: 1.8rem;">
+              <input class="input-group-field" id="anchor" name="anchor" type="hidden" value="works">
+            </form>
+          </li>
+          <li class="tabs-title{% if anchor == 'portal' %} is-active{% endif %}">
+            <a href="{% if request.path == '/' %}#portal{% else %}/?anchor=portal{% endif %}"{% if anchor == 'portal' %} aria-selected="true"{% endif %}><i class="fas fa-atom fa-lg" style="padding-right: 0.25rem;"></i>&nbsp;<b>Portal</b></a>
+          </li>
+          <li class="tabs-title{% if anchor == 'works' %} is-active{% endif %}">
+            <a href="{% if request.path == '/' %}#works{% else %}/?anchor=works{% endif %}"{% if anchor == 'works' %} aria-selected="true"{% endif %}><i class="fa fa-atlas fa-lg" style="padding-right: 0.25rem;"></i>&nbsp;<b>Works</b></a>
+          </li>
+          <li class="tabs-title{% if anchor == 'crafters' %} is-active{% endif %}">
+            <a href="{% if request.path == '/' %}#crafters{% else %}/?anchor=crafters{% endif %}"{% if anchor == 'crafters' %} aria-selected="true"{% endif %}><i class="fas fa-users fa-lg" style="padding-right: 0.25rem;"></i>&nbsp;<b>Crafters</b></a>
+          </li>
+        </ul>
+      </div>
+      <div class="title-bar-right" style="background-image: url('/static/img/{{ platform.get_name }}.png'); height: 1.8rem; background-size: cover; background-position: center;">
+      </div>
+    </div>
+  </div>
+
+  {% if messages %}
+  <div style="width: 80%; margin-left: auto; margin-right: auto">
+    {% for message in messages %}
+      <div class="callout" data-closable="slide-out-right">
+        <span style="font-weight: bold;"><i class="fas fa-{% if message.tags == 'error' %}dizzy{% elif message.tags == 'warning' %}frown-open{% elif message.tags == 'success' %}grin-wink{% elif message.tags == 'info' %}grin-beam-sweat{% elif message.tags == 'debug' %}meh{% else %}cat{% endif %} fa-2x" style="padding-right: 0.5rem; vertical-align: middle"></i>&nbsp;{{ message }}</span>
+        <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+          <span aria-hidden="true"><i class="far fa-times-circle fa-sm"></i></span>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div>
+    {% if platform and platform.use_portal %}
+      <div class="contact-panel" id="staff-panel" data-toggler=".is-active" style="right: 8rem;">
+        <a class="contact-panel-button" data-toggle="staff-panel">Staff</a>
+        {% if user.is_authenticated %}
+        <ul class="accordion" data-accordion>
+          <li class="accordion-item is-active" data-accordion-item>
+            <a href="#" class="accordion-title"><i class="fas fa-user"></i>&nbsp;{{ user }}</a>
+            <div class="accordion-content" data-tab-content>
+              <div class="button-group stacked">
+              <a href="{% url 'profile_edit' %}" class="button small">Edit profile</a>
+              <a href="{% url 'logout' %}" class="button small">Logout</a>
+              </div>
+            </div>
+          </li>
+          <li class="accordion-item" data-accordion-item>
+            <a href="#" class="accordion-title"><i class="fas fa-file-upload"></i>&nbsp;Import content</a>
+            <div class="accordion-content" data-tab-content>
+              <div class="button-group stacked">
+              <a href="{% url 'work_upload' %}" class="button small">Upload new work(s)</a>
+              <a href="{% url 'corpus_assemble' %}" class="button small">Assemble new corpus</a>
+              </div>
+            </div>
+          </li>
+          <li class="accordion-item" data-accordion-item>
+            <a href="#" class="accordion-title"><i class="fas fa-cogs"></i>&nbsp;Platform</a>
+            <div class="accordion-content" data-tab-content>
+              <div class="button-group stacked">
+              <a href="{% url 'crafter_register' %}" class="button small">Register new crafter</a>
+              <a href="{% url 'collective_edit' %}" class="button small">Edit collective</a>
+              <a href="{% url 'platform_configure' %}" class="button small">Reconfigure plateform</a>
+              </div>
+            </div>
+          </li>
+        </ul>
+        {% else %}
+        <form action="{% url 'login' %}" method="post">
+          {% csrf_token %}
+          {% for field in loginform %}
+            <div class="row">{{ field.errors }} <label for="{{ field.id_for_label }}">{{ field.label }} </label>{{ field }}</div>
+          {% endfor %}
+          <div class="contact-panel-actions" style="padding-top: 0.2rem;">
+            <button class="cancel-button" data-toggle="staff-panel">Nevermind</button>
+            <input type="submit" class="button submit-button" value="Submit">
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          </div>
+        </form>
+        {% endif %} 
+      </div>
+    {% endif %}
+
+    {% if platform and platform.contact_email %}
+    <div class="contact-panel" id="contact-panel" data-toggler=".is-active" style="right: 1rem;">
+      <a class="contact-panel-button" data-toggle="contact-panel">Contact</a>
+      <form action="{% url 'contact_form' %}" method="post">
+        {% csrf_token %}
+        {% for field in contactform %}
+          <div class="row">{{ field.errors }} <label for="{{ field.id_for_label }}">{{ field.label }} </label>{{ field }}</div>
+        {% endfor %}
+        <div class="contact-panel-actions" style="padding-top: 0.2rem;">
+          <button class="cancel-button" data-toggle="contact-panel">Nevermind</button>
+          <input type="submit" class="button submit-button" value="Submit">
+        </div>
+      </form>
+    </div>
+    {% endif %}
+
+  {% block content %}
+    <div class="tabs-content" data-tabs-content="collapsing-tabs">
+      <div class="tabs-panel{% if anchor == 'portal' %} is-active{% endif %}" id="portal">
+        {% include "panpub/panel/portal.html" %}
+      </div>
+      <div class="tabs-panel{% if anchor == 'works' %} is-active{% endif %}" id="works">
+        {% include "panpub/panel/works.html" %}
+      </div>
+      <div class="tabs-panel{% if anchor == 'crafters' %} is-active{% endif %}" id="crafters">
+        {% include "panpub/panel/crafters.html" %}
+      </div>
+    </div>
+  {% endblock content %}
+  </div>
+
+  </div>
+
+    {% block javascript %}
+    {% endblock javascript %}
+    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/what-input.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/foundation.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/django_panpub.js' %}"></script>
+    <script>$(document).foundation();</script>
+  </body>
+</html>

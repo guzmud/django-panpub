@@ -1,0 +1,7 @@
+{% load panpub_tags %}
+
+<div class="grid-x grid-margin-x" style="margin-top: 2rem;" data-equalizer>
+  {% for work in corpus.elements.all %}
+    {% workcard work %}
+  {% endfor %}
+</div>

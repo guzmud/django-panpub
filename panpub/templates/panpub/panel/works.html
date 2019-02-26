@@ -1,0 +1,61 @@
+{% load panpub_tags %}
+
+<section class="filter-simple">
+  <div class="grid-x grid-margin-x" style="margin-top: 2rem;">
+    <div class="cell small-2 right" data-sticky-container>
+      <div class="sticky" data-sticky>
+        <div class="grid-x" style="padding-top: 3rem;">
+          <div class="cell">
+            <span style="font-variant: small-caps;"><a href="{% url 'work_random' %}" class="button hollow">random&nbsp;<i class="fas fa-random"></i></a></span>
+          </div>
+
+          <div class="cell button-group" style="margin-bottom: 1rem;">
+            <a class="dropdown button arrow-only" type="button" data-toggle="example-dropdown">
+              <span style="font-variant: small-caps;">Filter by type</span>
+            </a>
+          </div>
+
+          <div class="dropdown-pane button-group" id="example-dropdown" data-dropdown data-auto-focus="true" data-hover="true" data-hover-pane="true">
+            <button class="button hollow filter-simple-button is-active" data-filter="all"><i class="fas fa-file"></i>&nbsp;all</button>
+            {% for worktype in worktypes %}
+              {% if worktype != 'content'  %}
+                <button class="button hollow filter-simple-button" data-filter="{{ worktype }}"><i class="fas fa-{% workicon worktype %}"></i>&nbsp;{{ worktype }}</button>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {% if search_list %}
+            <div class="cell">
+            <span style="font-variant: small-caps;">Current tags</span>
+              <ul style="list-style: none;">
+              {% for tag in search_list %}
+                  <li><span><a href="?tags__name={% for otag in search_list %}{% if otag != tag %}{{ otag }} {% endif %}{% endfor %}&anchor=works"><i class="fas fa-minus-square fa-lg" style="color: tomato;"></i></a><a href="?tags__name={{ tag }}&anchor=works" class="button" style="padding: 0.3rem; margin-bottom: 0.3rem; font-size: 0.8rem;"><b><i class="fas fa-tag"></i>&nbsp;{{ tag }}</b></a></span></li>
+              {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          {% if suggested_list %}
+            <div class="cell">
+            <span style="font-variant: small-caps;">Suggested tags</span>
+              <ul style="list-style: none;">
+              {% for tag in suggested_list %}
+                  <li><span><a href="?tags__name={% for otag in search_list %}{{ otag }},{% endfor %}{{ tag }}&anchor=works"><i class="fas fa-plus-square fa-lg" style="color: lime;"></i></a><a href="?tags__name={{ tag }}&anchor=works" class="button" style="padding: 0.3rem; margin-bottom: 0.3rem; font-size: 0.8rem;"><b><i class="fas fa-tag"></i>&nbsp;{{ tag }}</b></a></span></li>
+              {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+
+    <div class="cell small-10">
+      <div class="grid-x grid-margin-x" data-equalizer>
+      {% for work in works.qs %}
+        {% workcard work %}
+      {% endfor %}
+    </div>
+
+  <a href="#top">Top</a>
+</section>

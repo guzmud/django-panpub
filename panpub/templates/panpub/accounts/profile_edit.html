@@ -1,0 +1,22 @@
+{% extends override_base|default:"base.html" %}
+{% load static %}
+{% load panpub_tags %}
+
+{% block title %}Edit profile{% endblock %}
+
+{% block content %}
+<h3>Edit profile</h3>
+<form method="post">
+  {% csrf_token %}
+  <div class="grid-x grid-padding-x align-center-middle text-center" style="max-width: 80%; margin-right: auto; margin-left: auto;">
+    {% for field in profile_form %}
+      {% if field.label != 'Password' %}
+      <div class="medium-4 cell">{{ field.errors }} <label for="{{ field.id_for_label }}" style="font-weight: bold; font-variant: small-caps;">{{ field.label }} </label>{{ field }}</div>
+      {% endif %}
+    {% endfor %}
+    <div class="cell">
+      <input type="submit" class="button submit-button" value="Submit">
+    </div>
+  </div>
+</form>
+{% endblock %}

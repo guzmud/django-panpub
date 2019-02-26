@@ -1,0 +1,19 @@
+<h3>Delete <i>{{ work.name }}</i></h3>
+
+<div class="grid-x">
+  <div class="cell small-1">
+    <i class="fas fa-trash fa-2x"></i>
+  </div>
+  <div class="cell auto">
+    <form action="{% url 'work_delete' work.pk %}" class="input-group" method="post">
+      {% csrf_token %}
+      <div class="input-group">
+      <span class="input-group-label">Are you sure you want to delete "<i>{{ work.name }}</i>"?</span>
+      <div class="input-group-button">
+      <input type="submit" value="Confirm" class="button small">
+      </div>
+      </div>
+    </form>
+  </div>
+</div>
+<button class="close-button" data-close aria-label="Close reveal" type="button"><span aria-hidden="true">&times;</span></button>

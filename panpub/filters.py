@@ -1,55 +1,21 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 import django_filters
 
-from panpub.models import Crafter, Corpus, Content, Text, Collective
+from taggit.models import Tag
+
+from panpub.models import Content
 
 
-class CollectiveFilter(django_filters.FilterSet):
-    class Meta:
-        model = Collective
-        fields = ['name',
-                  ]
+class MultiValueCharFilter(django_filters.BaseCSVFilter, django_filters.CharFilter):
+    def filter(self, qs, value):
+        values = value or []
+        for value in values:
+            qs = super(MultiValueCharFilter, self).filter(qs, value)
+        return qs
 
 
-class CrafterFilter(django_filters.FilterSet):
-    class Meta:
-        model = Crafter
-        fields = ['user__username',
-                  'user__date_joined',
-                  'user__last_login',
-                  ]
+class TaggedWorkFilter(django_filters.FilterSet):
+    tags__name = MultiValueCharFilter(lookup_expr='contains')
 
-
-class CorpusFilter(django_filters.FilterSet):
-    class Meta:
-        model = Corpus
-        fields = ['name',
-                  'license',
-                  'datestamp',
-                  ]
-
-
-class ContentFilter(django_filters.FilterSet):
     class Meta:
         model = Content
-        fields = ['name',
-                  'license',
-                  'datestamp',
-                  'claims__claim__crafter__user__username',
-                  'claims__claim__claim_type',
-                  'corpuses__name',
-                  ]
-
-
-class TextFilter(django_filters.FilterSet):
-    class Meta:
-        model = Text
-        fields = ['name',
-                  'license',
-                  'datestamp',
-                  'claims__claim__crafter__user__username',
-                  'claims__claim__claim_type',
-                  'corpuses__name',
-                  ]
+        fields = ['tags__name',]

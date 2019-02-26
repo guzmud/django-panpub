@@ -1,0 +1,24 @@
+{% extends override_base|default:"base.html" %}
+{% load static %}
+{% load panpub_tags %}
+
+{% block content %}
+<div class="grid-x">
+  <div class="cell small-3 right" data-sticky-container style="margin-top: 1rem;">
+    <div class="sticky" data-sticky data-anchor="workdisplay" data-stick-to="bottom">
+    {% cartouche work user %}
+    </div>
+  </div>
+
+  <div class="cell small-9" id="workdisplay" style="margin-top: 1rem;">
+  {% if work.worktype == 'text' %}
+    {% text_display work %}
+  {% elif work.worktype == 'image' %}
+    {% image_display work %}
+  {% elif work.worktype == 'corpus' %}
+    {% corpus_display work %}
+  {% endif %}
+  </div>
+
+</div>
+{% endblock content %}

@@ -1,9 +1,12 @@
-{% extends "base.html" %}
+{% extends override_base|default:"base.html" %}
 {% load static %}
 {% load markdown_deux_tags %}
 
 {% block content %}
 <h1>{{ collective.name }}</h1>
+
+<a href="{% url 'collective_update' collective.pk %}" class="button-hover button"><span>Edit</span><i class="fas fa-pen"></i></a>
+<a href="{% url 'collective_delete' collective.pk %}" class="button-hover button"><span>Delete</span><i class="fas fa-trash"></i></a>
 
 <h2>Circles</h2>
 <ul>

@@ -1,0 +1,42 @@
+{% load panpub_tags %}
+
+<div class="grid-x grid-margin-x" data-equalizer style="margin-top: 2rem;">
+{% for crafter in crafters %}
+<div class="cell medium-6 large-3 card-profile-stats">
+  <div class="card-profile-stats-intro">
+    <i class="fas fa-{{ crafter.fa_icon }} fa-3x" style="margin: 0 1.25rem 0 0; display: inline-block; vertical-align: middle; "></i>
+    <div class="card-profile-stats-intro-content">
+      <h3>{{ crafter }}</h3>
+      <p><small>Joined {{ crafter.user.date_joined|date:"Y-m-d" }}<br>Last seen {{ crafter.user.last_login|date:"Y-m-d"|default:"1970-01-01" }}</small></p>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="card-profile-stats-container">
+    <div class="card-profile-stats-statistic">
+      <span class="stat">{% creatorclaims_number crafter.pk %}</span>
+      <p>Creator</p>
+    </div>
+    <div class="card-profile-stats-statistic">
+      <span class="stat">{% curatorclaims_number crafter.pk %}</span>
+      <p>Curator</p>
+    </div>
+    <div class="card-profile-stats-statistic">
+      <span class="stat">{% mediatorclaims_number crafter.pk %}</span>
+      <p>Mediator</p>
+    </div>
+  </div>
+
+  <div class="card-profile-stats-more">
+    <p class="card-profile-stats-more-link"><a href="#"><i class="fa fa-angle-down fa-border" aria-hidden="true"></i></a></p>
+    <div class="card-profile-stats-more-content">
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem libero fugit, pariatur maxime! Optio enim, deserunt quia molestiae fugiat delectus, dolore et esse nostrum, quod autem necessitatibus fugit soluta repellendus.
+      </p>
+      <a href="{% url 'crafter_detail' crafter.pk %}" class="button small expanded hollow"><b>See the full profile</b></a>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</div>

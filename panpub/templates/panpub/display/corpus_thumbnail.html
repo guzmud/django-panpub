@@ -1,0 +1,16 @@
+{% load panpub_tags %}
+<div class="orbit" role="region" aria-label="Corpus thumbnail" data-orbit>
+  <div class="orbit-wrapper">
+    <ul class="orbit-container">
+    {% for work in elements %}
+      <li class="orbit-slide">
+      {% if work.worktype == 'image' %}
+        {% image_thumbnail work %}
+      {% elif work.worktype == 'text' %}
+        {% text_thumbnail work %}
+      {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+</div>

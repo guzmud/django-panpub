@@ -1,0 +1,25 @@
+<div class="grid-x">
+  <form action="{% url 'work_update' work.pk %}" method="post">
+    <div class="cell">
+      <h3>Update <i>{{ work.name }}</i></h3>
+    </div>
+    {% csrf_token %}
+    {% for field in update_form %}
+        <div class="cell">
+          <div class="input-group">
+          {% if field.name == 'document' %}
+            <span for="{{ field.id_for_label }}" class="input-group-label"><b>Change document</b></span>
+            <input type="file" name="{{ field.name }}">
+          {% else %}
+            <span for="{{ field.id_for_label }}" class="input-group-label"><b>{{ field.label }}</b></span>
+            {{ field }}
+          {% endif %}
+          </div>
+        </div>
+    {% endfor %}
+    <div class="cell">
+      <input type="submit" value="Edit" class="button small float-center">
+    </div>
+  </form>
+  <button class="close-button" data-close aria-label="Close reveal" type="button"><span aria-hidden="true">&times;</span></button>
+</div>
