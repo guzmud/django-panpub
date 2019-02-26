@@ -15,13 +15,15 @@
             </a>
           </div>
 
-          <div class="dropdown-pane button-group" id="example-dropdown" data-dropdown data-auto-focus="true" data-hover="true" data-hover-pane="true">
+          <div class="dropdown-pane" id="example-dropdown" data-dropdown data-auto-focus="true" data-hover="true" data-hover-pane="true">
+            <div class="stacked expanded button-group">
             <button class="button hollow filter-simple-button is-active" data-filter="all"><i class="fas fa-file"></i>&nbsp;all</button>
             {% for worktype in worktypes %}
               {% if worktype != 'content'  %}
                 <button class="button hollow filter-simple-button" data-filter="{{ worktype }}"><i class="fas fa-{% workicon worktype %}"></i>&nbsp;{{ worktype }}</button>
               {% endif %}
             {% endfor %}
+            </div>
           </div>
 
           {% if search_list %}
