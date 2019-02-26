@@ -33,7 +33,7 @@ class LoginForm(AuthenticationForm):
 class ContactForm(forms.Form):
     identity = forms.CharField(max_length=100)
     email = forms.EmailField(min_length=5, max_length=100)
-    message = forms.CharField(max_length=400, widget=forms.Textarea(attrs={'rows': 3}))
+    message = forms.CharField(max_length=400, widget=forms.Textarea(attrs={'rows': 2}))
     captcha = ReCaptchaField(label="",
                              widget=ReCaptchaV2Checkbox(attrs={'data-theme': 'dark'}),
                              )

@@ -9,6 +9,7 @@
   box-shadow: 5px 5px 8px #888888;
   font-size: 0.9rem !important;
   margin: 1rem;
+  max-width: 95%;
 }
 
 ::placeholder {
@@ -277,9 +278,9 @@
   z-index: 1;
   background: #0a0a0a;
   width: 350px;
-  height: 70%;
+  height: 65%;
   position: fixed;
-  bottom: -70%;
+  bottom: -65%;
   right: 20px;
   transition: bottom 0.5s ease-in-out;
 }

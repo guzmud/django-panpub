@@ -11,6 +11,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
+from panpub.context_processors import PANPUB_MAX_SUGGEST
 from panpub.filters import TaggedWorkFilter
 from panpub.forms import (
         CrafterDeploy,
@@ -223,6 +224,7 @@ def crafter_register(request):
                   })
 
 
+# achtung il semble que du cache soit fait sur cette page, baysant le random
 def work_random(request):
     return redirect(random.choice(Content.objects.all()).get_absolute_url())
 
@@ -230,7 +232,7 @@ def work_random(request):
 def work_details(request, pk):
     work = get_object_or_404(Content, pk=pk)
 
-    similar_works = Content.objects.exclude(pk=work.pk).filter(tags__in=work.tags.all())
+    similar_works = Content.objects.exclude(pk=work.pk).filter(tags__in=work.tags.all())[:PANPUB_MAX_SUGGEST]
 
     return render(request,
                   'panpub/work_details.html',
