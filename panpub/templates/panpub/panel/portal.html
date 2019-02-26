@@ -5,19 +5,19 @@
   <div class="cell small-3 right" data-sticky-container style="margin-top: 1rem;">
     <div class="sticky" data-sticky data-anchor="workdisplay" data-stick-to="bottom">
       <div class="grid-y">
-        <div class="cell" style="border: 0.2rem solid {{ platform.main_color }}; border-radius: 5px; padding: 0.5rem; margin-right: 1rem; box-shadow: 5px 5px 8px #888888; margin-bottom: 1rem;">
-        <h4 style="font-variant: small-caps;">{{ collective.name }}</h4>
-        <ul class="stats-list" style="margin-bottom: 0rem;">
-        {% with members=collective.members.all|length works=collective.works|length claims=collective.claims|length %}
-        <li>{{ works }} <span class="stats-list-label">Work{{ works|pluralize }}</span></li>
-        <li>{{ claims }} <span class="stats-list-label">Claim{{ claims|pluralize }}</span></li>
-        <li>{{ members }} <span class="stats-list-label">Member{{ members|pluralize }}</span></li>
-        {% endwith %}
-        </ul>
+        <div class="cell cartouche">
+          <h4 style="font-variant: small-caps;">{{ collective.name }}</h4>
+          <ul class="stats-list" style="margin-bottom: 0rem;">
+          {% with members=collective.members.all|length works=collective.works|length claims=collective.claims|length %}
+            <li>{{ works }} <span class="stats-list-label">Work{{ works|pluralize }}</span></li>
+            <li>{{ claims }} <span class="stats-list-label">Claim{{ claims|pluralize }}</span></li>
+            <li>{{ members }} <span class="stats-list-label">Member{{ members|pluralize }}</span></li>
+          {% endwith %}
+          </ul>
         </div>
 
         {% if collective.latest_works %}
-          <div class="cell" style="border: 0.2rem solid {{ platform.main_color }}; border-radius: 5px; padding: 0.5rem; margin-right: 1rem; box-shadow: 5px 5px 8px #888888; margin-bottom: 1rem;">
+          <div class="cell cartouche">
             <h4 style="font-variant: small-caps;">Latest works</h4>
             <ul style="list-style: none;">
             {% for work in collective.latest_works %}
@@ -28,7 +28,7 @@
         {% endif %}
 
         {% if collective.latest_members %}
-          <div class="cell" style="border: 0.2rem solid {{ platform.main_color }}; border-radius: 5px; padding: 0.5rem; margin-right: 1rem; box-shadow: 5px 5px 8px #888888; margin-bottom: 1rem;">
+          <div class="cell cartouche">
             <h4 style="font-variant: small-caps;">Latest members</h4>
             <ul style="list-style: none;">
             {% for member in collective.latest_members %}

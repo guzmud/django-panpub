@@ -7,12 +7,12 @@
   <div class="cell small-3 right" data-sticky-container style="margin-top: 1rem;">
     <div class="sticky" data-sticky data-anchor="workdisplay" data-stick-to="bottom">
       <div class="grid-y">
-        <div class="cell">
+        <div class="cell cartouche">
           {% cartouche work user %}
         </div>
 
         {% if similar_works %}
-          <div class="cell" style="border: 0.2rem solid {{ platform.main_color }}; border-radius: 5px; padding: 0.5rem; margin-right: 1rem; box-shadow: 5px 5px 8px #888888; margin: 1rem;">
+          <div class="cell cartouche">
             <h4 style="font-variant: small-caps;">Similar works</h4>
             <ul style="list-style: none;">
             {% for swork in similar_works %}
