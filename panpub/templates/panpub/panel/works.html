@@ -5,12 +5,15 @@
     <div class="cell small-2 right" data-sticky-container>
       <div class="sticky" data-sticky>
         <div class="grid-x" style="padding-top: 3rem;">
+
           <div class="cell">
-            <span style="font-variant: small-caps;"><a href="{% url 'work_random' %}" class="button hollow">random&nbsp;<i class="fas fa-random"></i></a></span>
+            <a href="{% url 'work_random' %}" class="button hollow" style="width: 100%;">
+              <span style="font-variant: small-caps;">random&nbsp;<i class="fas fa-random"></i></span>
+            </a>
           </div>
 
           <div class="cell button-group" style="margin-bottom: 1rem;">
-            <a class="dropdown button arrow-only" type="button" data-toggle="example-dropdown">
+            <a class="dropdown button arrow-only" type="button" data-toggle="example-dropdown" style="width: 100%;">
               <span style="font-variant: small-caps;">Filter by type</span>
             </a>
           </div>

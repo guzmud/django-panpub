@@ -1,5 +1,12 @@
+from django.conf import settings
+
 from panpub.forms import ContactForm, LoginForm
 from panpub.models import Platform, Content
+
+if hasattr(settings, 'PANPUB_MAX_SUGGEST'):
+    PANPUB_MAX_SUGGEST = int(settings.PANPUB_MAX_SUGGEST)
+else:
+    PANPUB_MAX_SUGGEST = 7
 
 
 def platform_settings(request):
@@ -24,7 +31,6 @@ def platform_settings(request):
 
     search_value = request.GET.get('tags__name', None)
     search_list = None
-    suggested_list = None
     if search_value:
         search_list = search_value.replace(',',' ').split()
         suggested_list = list()
@@ -33,6 +39,9 @@ def platform_settings(request):
                 for t in c.tags.values_list('name', flat=True):
                     if t not in suggested_list and t not in search_list:
                         suggested_list.append(t)
+    else:
+        suggested_list = Content.tags.tag_model.objects.order_by('-count').values_list('slug', flat=True)
+    suggested_list = suggested_list[:PANPUB_MAX_SUGGEST]
 
     contactform = ContactForm()
     loginform = LoginForm()
