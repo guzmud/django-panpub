@@ -31,6 +31,7 @@ FORMAT_TYPE_MATRICE = {
     'tiff': 'image/tiff',
     'webp': 'image/webp',
     'pdf': 'application/pdf',
+    'mp3': 'audio/mp3',
     }
 
 
@@ -71,6 +72,8 @@ def worktype_inputtype(worktype):
         return refs.text_upformats
     elif worktype == 'image':
         return refs.image_upformats
+    elif worktype == 'audio':
+        return refs.audio_upformats
     return list()
 
 

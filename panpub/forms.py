@@ -9,13 +9,9 @@ from django.contrib.auth.forms import (
 
 from panpub import references as refs
 from panpub.models import (
-    Crafter,
     Collective,
-    Corpus,
     Content,
-    Image,
     Platform,
-    Text,
     fontawesome_choices,
     )
 from panpub.utils import worktype_inputtype
@@ -113,3 +109,7 @@ class ImageExport(forms.Form):
 
 class CorpusExport(forms.Form):
     format = forms.ChoiceField(choices=[(k, k) for k in refs.corpus_pubformats])
+
+
+class AudioExport(forms.Form):
+    format = forms.ChoiceField(choices=[(k, k) for k in refs.audio_pubformats])

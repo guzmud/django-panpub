@@ -24,6 +24,9 @@ image_pubformats = ('bmp',
                     'webp',
                     )
 
+audio_pubformats = ('mp3',
+                   )
+
 text_upformats = (('markdown', 'Markdown'),
                   ('gfm', 'Markdown (github-flavour)'),
                   ('latex', 'LaTeX'),
@@ -57,3 +60,6 @@ image_upformats = (('bmp', 'Windows bitmap'),
                    ('psd', 'Photoshop Document'),
                    ('xpm', 'X PixMap'),
                    )
+
+audio_upformats = (('mp3', 'MP3'),
+                  )

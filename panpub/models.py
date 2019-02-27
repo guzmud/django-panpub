@@ -24,6 +24,7 @@ import pypandoc
 
 from colorful.fields import RGBColorField
 from PIL import Image as PIL_image
+from pydub import AudioSegment
 from tagulous.models import SingleTagField, TagField
 
 from panpub import references as refs
@@ -348,7 +349,7 @@ class Image(Content):
                                              datafile,
                                              'FileField',
                                              '{}.png'.format(dataname),
-                                             'text/markdown',
+                                             'image/png',
                                              getsizeof(datafile),
                                              'UTF-8',
             )
@@ -379,7 +380,61 @@ class Image(Content):
 
 
 class Audio(Content):
-    document = models.FileField(upload_to='{}/audios/'.format(PANPUB_MEDIA))
+    input_type = models.CharField(max_length=10,
+                                  choices=refs.audio_upformats,
+                                  default='mp3')
+
+    document = models.FileField(
+        upload_to='{}/audios/'.format(PANPUB_MEDIA),
+        )
+
+    def save(self, *args, **kwargs):
+        try:
+            with tempfile.NamedTemporaryFile(suffix='.{}'.format(self.input_type)) as f1:
+                f1.write(self.document.read())
+                f1path = pathlib.Path(tempfile.tempdir, f1.name).as_posix()
+                audiodata = AudioSegment.from_file(f1path, format=self.input_type)
+
+                with tempfile.NamedTemporaryFile(suffix='.mp3') as f2:
+                    f2path = pathlib.Path(tempfile.tempdir, f2.name).as_posix()
+                    audiodata.export(f2path, format='mp3')
+
+                    datafile = BytesIO(f2.read())
+                    dataname = hashlib.sha256(datafile.getvalue()).hexdigest()
+                    datafile.seek(0)
+                    self.document = InMemoryUploadedFile(datafile,
+                                                         'FileField',
+                                                         '{}.mp3'.format(dataname),
+                                                         'audio/mp3',
+                                                         getsizeof(datafile),
+                                                         'UTF-8',
+                                                         )
+        except Exception:
+            raise Exception
+        else:
+            super(Audio, self).save(*args, **kwargs)
+            self.content_ptr.set_worktype('audio')
+
+    def available_pubformats(self):
+        return refs.audio_pubformats
+
+    def export(self, pubformat='mp3'):
+        if pubformat not in self.available_pubformats():
+            raise Exception
+        try:
+            audio = AudioSegment.from_file(self.document.path, format='mp3')
+            with tempfile.NamedTemporaryFile(suffix='.{}'.format(pubformat)) as f:
+                fpath = pathlib.Path(tempfile.tempdir, f.name).as_posix()
+                audio.export(fpath, format=pubformat)
+                f.seek(0)
+                datafile = f.read()
+        except Exception:
+            raise Exception
+        else:
+            filelen = len(datafile)
+            filename = '{}.{}'.format(self.filefriendly_name(),
+                                      pubformat)
+            return datafile, filename, filelen
 
 
 class Video(Content):

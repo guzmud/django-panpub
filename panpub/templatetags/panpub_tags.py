@@ -3,9 +3,9 @@ import base64
 from django import template
 from django.forms import FileInput, Textarea
 
-from panpub.forms import CorpusExport, TextExport, ImageExport
+from panpub.forms import AudioExport, CorpusExport, TextExport, ImageExport
 from panpub.genericviews import ContentDelete, ContentUpdate, ContentMediate
-from panpub.models import Claim, Crafter, Content, Corpus, Image, Platform, Text
+from panpub.models import Audio, Claim, Crafter, Content, Corpus, Image, Platform, Text
 from panpub.utils import worktype_icon
 
 
@@ -142,6 +142,18 @@ def image_thumbnail(work):
         return {'b64image': base64_image(Image.objects.get(content_ptr=work)), }
 
 
+@register.inclusion_tag('panpub/display/audio.html')
+def audio_display(work):
+    if Audio.objects.filter(content_ptr=work).exists():
+        return {'audio': None, }
+
+
+@register.inclusion_tag('panpub/display/audio_thumbnail.html')
+def audio_thumbnail(work):
+    if Audio.objects.filter(content_ptr=work).exists():
+        return {'audio_graph': None, }
+
+
 @register.inclusion_tag('panpub/display/text.html')
 def text_display(work):
     if Text.objects.filter(content_ptr=work).exists():
@@ -198,6 +210,10 @@ def cartouche(work, user):
         export_form = ImageExport()
         if Image.objects.filter(content_ptr=work).exists():
             work_child = Image.objects.get(content_ptr=work)
+    elif work.worktype == 'audio':
+        export_form = AudioExport()
+        if Audio.objects.filter(content_ptr=work).exists():
+            work_child = Audio.objects.get(content_ptr=work)
     elif work.worktype == 'corpus':
         export_form = CorpusExport()
         if Corpus.objects.filter(content_ptr=work).exists():

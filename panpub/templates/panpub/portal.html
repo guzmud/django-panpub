@@ -61,7 +61,7 @@
 
   <div>
     {% if platform and platform.use_portal %}
-      <div class="contact-panel" id="staff-panel" data-toggler=".is-active" style="right: 12rem;">
+      <div class="contact-panel" id="staff-panel" data-toggler=".is-active" style="right: 11rem;">
         <a class="contact-panel-button" data-toggle="staff-panel">Staff</a>
         {% if user.is_authenticated %}
         <ul class="accordion" data-accordion>
@@ -111,7 +111,7 @@
     {% endif %}
 
     {% if platform and platform.contact_email %}
-    <div class="contact-panel" id="contact-panel" data-toggler=".is-active" style="right: 5rem;">
+    <div class="contact-panel" id="contact-panel" data-toggler=".is-active" style="right: 4rem;">
       <a class="contact-panel-button" data-toggle="contact-panel">Contact</a>
       <form action="{% url 'contact_form' %}" method="post">
         {% csrf_token %}
@@ -126,7 +126,7 @@
     </div>
     {% endif %}
 
-    <div class="contact-panel" style="right: 1rem;">
+    <div class="contact-panel" style="right: 0rem;">
       <a class="contact-panel-button" href="#top"><i class="fas fa-level-up-alt"></i></a>
     </div>
 

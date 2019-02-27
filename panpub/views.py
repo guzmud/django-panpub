@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from panpub.context_processors import PANPUB_MAX_SUGGEST
 from panpub.filters import TaggedWorkFilter
 from panpub.forms import (
+        AudioExport,
         CrafterDeploy,
         CollectiveDeploy,
         CollectiveEdit,
@@ -25,6 +26,7 @@ from panpub.forms import (
         ContentUpload,
         )
 from panpub.models import (
+        Audio,
         Crafter,
         Collective,
         Content,
@@ -282,6 +284,9 @@ def work_export_form(request, pk):
         elif work.worktype == 'image' and Image.objects.filter(content_ptr=work).exists():
             work = Image.objects.get(content_ptr=work)
             form = ImageExport(request.POST)
+        elif work.worktype == 'audio' and Audio.objects.filter(content_ptr=work).exists():
+            work = Audio.objects.get(content_ptr=work)
+            form = AudioExport(request.POST)
 #        elif work.worktype == 'corpus' and Corpus.objects.filter(content_ptr=work).exists():
 #            work = Corpus.objects.get(content_ptr=work)
         else:

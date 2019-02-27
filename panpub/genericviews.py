@@ -12,6 +12,7 @@ from django.views.generic import (
 )
 
 from panpub.models import (
+        Audio,
         Crafter,
         Collective,
         Content,
@@ -121,6 +122,8 @@ class ContentDelete(DeleteView):
             obj = Text.objects.get(content_ptr=obj)
         elif obj.worktype == 'image' and Image.objects.filter(content_ptr=obj).exists():
             obj = Image.objects.get(content_ptr=obj)
+        elif obj.worktype == 'audio' and Audio.objects.filter(content_ptr=obj).exists():
+            obj = Audio.objects.get(content_ptr=obj)
         elif obj.worktype == 'corpus' and Corpus.objects.filter(content_ptr=obj).exists():
             obj = Corpus.objects.get(content_ptr=obj)
         return obj
@@ -138,6 +141,8 @@ class ContentUpdate(UpdateView):
             obj = Text.objects.get(content_ptr=obj)
         elif obj.worktype == 'image' and Image.objects.filter(content_ptr=obj).exists():
             obj = Image.objects.get(content_ptr=obj)
+        elif obj.worktype == 'audio' and Audio.objects.filter(content_ptr=obj).exists():
+            obj = Audio.objects.get(content_ptr=obj)
         elif obj.worktype == 'corpus' and Corpus.objects.filter(content_ptr=obj).exists():
             obj = Corpus.objects.get(content_ptr=obj)
             self.fields = corpus_fields
@@ -148,6 +153,8 @@ class ContentUpdate(UpdateView):
             return model_forms.modelform_factory(Text, fields=self.fields)
         elif isinstance(self.object, Image):
             return model_forms.modelform_factory(Image, fields=self.fields)
+        elif isinstance(self.object, Audio):
+            return model_forms.modelform_factory(Audio, fields=self.fields)
         elif isinstance(self.object, Corpus):
             return model_forms.modelform_factory(Corpus, fields=self.fields)
         else:
@@ -165,6 +172,8 @@ class ContentMediate(UpdateView):
             obj = Text.objects.get(content_ptr=obj)
         elif obj.worktype == 'image' and Image.objects.filter(content_ptr=obj).exists():
             obj = Image.objects.get(content_ptr=obj)
+        elif obj.worktype == 'audio' and Audio.objects.filter(content_ptr=obj).exists():
+            obj = Audio.objects.get(content_ptr=obj)
         elif obj.worktype == 'corpus' and Corpus.objects.filter(content_ptr=obj).exists():
             obj = Corpus.objects.get(content_ptr=obj)
             self.fields = corpus_fields
@@ -175,6 +184,8 @@ class ContentMediate(UpdateView):
             return model_forms.modelform_factory(Text, fields=self.fields)
         elif isinstance(self.object, Image):
             return model_forms.modelform_factory(Image, fields=self.fields)
+        elif isinstance(self.object, Audio):
+            return model_forms.modelform_factory(Audio, fields=self.fields)
         elif isinstance(self.object, Corpus):
             return model_forms.modelform_factory(Corpus, fields=self.fields)
         else:
@@ -200,6 +211,15 @@ class ImageCreate(ContentCreate):
     def get_context_data(self, **kwargs):
         ctx = super(ImageCreate, self).get_context_data(**kwargs)
         ctx['worktype'] = 'image'
+        return ctx
+
+
+class AudioCreate(ContentCreate):
+    model = Audio
+
+    def get_context_data(self, **kwargs):
+        ctx = super(AudioCreate, self).get_context_data(**kwargs)
+        ctx['worktype'] = 'audio'
         return ctx
 
 

@@ -3,6 +3,7 @@ django-filter
 django-markdown-deux
 django-tagulous
 Pillow
+pydub
 pypandoc
 tablib[pandas]
 ujson
