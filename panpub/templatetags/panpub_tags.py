@@ -1,7 +1,14 @@
 import base64
 
+from io import BytesIO
+
+import matplotlib
+matplotlib.use('agg')
+import matplotlib.pyplot as plt
+
 from django import template
 from django.forms import FileInput, Textarea
+from pydub import AudioSegment
 
 from panpub.forms import AudioExport, CorpusExport, TextExport, ImageExport
 from panpub.genericviews import ContentDelete, ContentUpdate, ContentMediate
@@ -151,7 +158,14 @@ def audio_display(work):
 @register.inclusion_tag('panpub/display/audio_thumbnail.html')
 def audio_thumbnail(work):
     if Audio.objects.filter(content_ptr=work).exists():
-        return {'audio_graph': None, }
+        sound = AudioSegment.from_file(Audio.objects.get(content_ptr=work).document.path)
+
+        plt.plot(sound.get_array_of_samples())
+        img = BytesIO()
+        plt.savefig(img, format='png')
+        img.seek(0)
+        b64plot = base64.b64encode(img.read()).decode()
+        return {'audio_plot': b64plot, }
 
 
 @register.inclusion_tag('panpub/display/text.html')

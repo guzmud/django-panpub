@@ -2,8 +2,9 @@ django-colorful
 django-filter
 django-markdown-deux
 django-tagulous
+matplotlib
 Pillow
 pydub
 pypandoc
-tablib[pandas]
+tablib
 ujson

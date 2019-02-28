@@ -14,6 +14,8 @@
       {% image_thumbnail work %}
     {% elif work.worktype == 'text' %}
       {% text_thumbnail work %}
+    {% elif work.worktype == 'audio' %}
+      {% audio_thumbnail work %}
     {% elif work.worktype == 'corpus' %}
       {% corpus_thumbnail work %}
     {% endif %}
