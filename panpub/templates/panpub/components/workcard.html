@@ -1,15 +1,5 @@
 {% load panpub_tags %}
-<div class="cell medium-8 large-4 filter-simple-item {{ work.worktype }}">
-  <div class="news-card-tag">
-  {% if tags %}
-    {% for tag in tags %}
-    <a href="?tags__name={{ tag }}&anchor=works" class="button" style="padding: 0.3rem; font-size: 0.8rem;"><b><i class="fas fa-tag"></i>&nbsp;{{ tag }}</b></a></span>
-    {% endfor %}
-  {% endif %}
-  </div>
-
-  <a href="{{ work.get_absolute_url }}">
-  <div class="card news-card" data-equalizer-watch>
+  <article class="card filter-simple-item {{ work.worktype }}">
     {% if work.worktype == 'image' %}
       {% image_thumbnail work %}
     {% elif work.worktype == 'text' %}
@@ -19,48 +9,30 @@
     {% elif work.worktype == 'corpus' %}
       {% corpus_thumbnail work %}
     {% endif %}
-
-    <div class="card-section">
-      <div class="news-card-date" style="font-size: 90%;">
-        {{ work.created_at|date:"Y-m-d" }} {% if work.updated_at|date:"Y-m-d" != work.created_at|date:"Y-m-d" %}(last: {{ work.updated_at|date:"Y-m-d" }}){% endif %}
-      </div>
-
-      <article class="news-card-article">
-        <h4 class="news-card-title"><i class="fas fa-{% workicon work.worktype %}"></i>&nbsp;<a href="{{ work.get_absolute_url }}">{{ work.name }}</a></h4>
-        <p class="news-card-description" style="font-style: italic;">{{ work.description }}</p>
-      </article>
-
-      <div class="news-card-author">
-        <div class="news-card-author-name">
-          <ul style="list-style: none; margin: 1rem auto;">
-            {% if creators %}
-            <li style="margin: 0.1rem auto; padding-left: 0.2rem;">Creator{{ creators|pluralize }}:
-            {% for crafter in creators %}
-              <span data-tooltip tabindex="1" title="{{ crafter }}"><a href="{{ crafter.get_absolute_url }}"><i class="fas fa-{{ crafter.fa_icon }}"></i></a></span>&nbsp;
-            {% endfor %}
-            </li>
-            {% endif %}
-
-            {% if curators %}
-            <li style="margin: 0.1rem auto; padding-left: 0.2rem;">Curator{{ curators|pluralize }}:
-            {% for crafter in curators %}
-              <span data-tooltip tabindex="1" title="{{ crafter }}"><a href="{{ crafter.get_absolute_url }}"><i class="fas fa-{{ crafter.fa_icon }} fa-sm"></i></a></span>&nbsp;
-            {% endfor %}
-            </li>
-            {% endif %}
-
-            {% if mediators %}
-            <li style="margin: 0.1rem auto; padding-left: 0.2rem;">Mediator{{ mediators|pluralize }}:
-            {% for crafter in mediators %}
-              <span data-tooltip tabindex="1" title="{{ crafter }}"><a href="{{ crafter.get_absolute_url }}"><i class="fas fa-{{ crafter.fa_icon }} fa-sm"></i></a></span>&nbsp;
-            {% endfor %}
-            </li>
-            {% endif %}
-          </ul>
+    <div style="position: absolute; bottom: 0; background-color: rgb(0,0,0,0.2); width: 100%; height: 20rem;"></div>
+    <footer style="position: absolute; bottom: 0; width: 100%; height: 40%; background-color: #ffffffbb;">
+      <h3>{{ work.name }}</h3>
+      <div style="font-size: 0.75rem;">
+        <p style="font-style: italic;">{{ work.description }}</p>
+        <div style="position: absolute; bottom: 0; width: 90%;">
+        <button disabled style="font-size: 0.8rem;">{{ work.created_at|date:"Y-m-d" }}</button>
+        <button disabled style="font-size: 0.8rem;">{{ work.updated_at|date:"Y-m-d" }}</button>
+        <a href="{{ work.get_absolute_url }}">
+        <button style="float: right; font-size: 0.8rem;"><i class="fas fa-{% workicon work.worktype %}"></i>&nbsp;
+          {% if work.worktype == 'image' %}
+          View
+          {% elif work.worktype == 'text' %}
+          Read
+          {% elif work.worktype == 'audio' %}
+          Listen
+          {% elif work.worktype == 'corpus' %}
+          Browse
+          {% else %}
+          Check
+          {% endif %}
+        </button>
+        </a>
         </div>
-      </div>
-
     </div>
-  </div>
-  </a>
-</div>
+    </footer>
+  </article>

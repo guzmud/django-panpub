@@ -31,6 +31,8 @@
     {% text_display work %}
   {% elif work.worktype == 'image' %}
     {% image_display work %}
+  {% elif work.worktype == 'audio' %}
+    {% audio_display work %}
   {% elif work.worktype == 'corpus' %}
     {% corpus_display work %}
   {% endif %}

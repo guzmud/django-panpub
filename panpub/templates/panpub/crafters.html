@@ -1,0 +1,14 @@
+{% extends override_base|default:"base.html" %}
+{% load static %}
+{% load panpub_tags %}
+
+{% block content %}
+
+<div class="flex three" style="margin-top: 3rem;">
+{% for crafter in crafters %}
+  <div>
+  {% craftercard crafter %}
+  </div>
+{% endfor %}
+</div>
+{% endblock %}

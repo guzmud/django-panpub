@@ -5,44 +5,18 @@
 {% block content %}
 <h1>{{ crafter.user.username }}</h1>
 
-<a href="{% url 'crafter_update' crafter.pk %}" class="button-hover button"><span>Edit</span><i class="fas fa-pen"></i></a>
-<a href="{% url 'crafter_delete' crafter.pk %}" class="button-hover button"><span>Delete</span><i class="fas fa-trash"></i></a>
+{% comment %}
+<a href="{% url 'crafter_update' crafter.pk %}" class="button"><i class="fas fa-pen"></i>&nbsp;Edit</a>
+<a href="{% url 'crafter_delete' crafter.pk %}" class="button"><span></span><i class="fas fa-trash"></i>&nbsp;Delete</a>
+{% endcomment %}
 
-<h2>Collectives</h2>
-<ul>
-{% for collective in crafter.collectives %}
-<li><a href="{{ collective.get_absolute_url }}">{{ collective }}</a></li>
-{% empty %}
-<li>This crafter is not part of any collective yet.</li>
-{% endfor %}
-</ul>
+<div class="flex three">
+{% for claim in crafter.compact_claims %}
+  <div>
+  <span class="label" style="background: orange; position: absolute; z-index: 3; font-size: 1rem;"><i class="fas fa-{% if claim.claim_type == 'CRT' %}hand-rock{% elif claim.claim_type == 'CUR' %}hands-helping{% elif claim.claim_type == 'MED' %}hands{% else %}hand-paper{% endif %}"></i>&nbsp;{{ claim.claim_type }}</span>
 
-<h2>Claims</h2>
-<ul>
-{% for claim in crafter.claims %}
-<li>{{ claim }}</li>
-{% empty %}
-<li>This crafter has no claims yet.</li>
+  {% workcard claim.content %}
+  </div>
 {% endfor %}
-</ul>
-
-<h2>Crafterworks</h2>
-<ul>
-{% crafterworks crafter.pk as works %}
-{% for work in works %}
-<li><a href="{{ work.get_absolute_url }}">{{ work }}</a></li>
-{% empty %}
-<li>No work linked to this crafter yet.</li>
-{% endfor %}
-</ul>
-
-<h2>Craftertexts</h2>
-<ul>
-{% craftertexts crafter.pk as texts %}
-{% for text in texts %}
-<li><a href="{{ text.get_absolute_url }}">{{ text }}</a></li>
-{% empty %}
-<li>No text linked to this crafter yet.</li>
-{% endfor %}
-</ul>
+</div>
 {% endblock %}

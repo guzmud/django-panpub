@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import datetime
+import operator
 import tarfile
 from io import BytesIO, StringIO
 from pathlib import Path
@@ -33,6 +34,16 @@ FORMAT_TYPE_MATRICE = {
     'pdf': 'application/pdf',
     'mp3': 'audio/mp3',
     }
+
+
+def topof(sdict, k=3):
+    tdict = dict()
+    k = min(k, len(sdict))
+    for i in range(k):
+        maxk = max(sdict.items(), key=operator.itemgetter(1))[0]
+        tdict[maxk] = sdict[maxk]
+        del sdict[maxk]
+    return tdict
 
 
 def worktypes(include_content=True):

@@ -1,0 +1,44 @@
+{% load panpub_tags %}
+<article class="card">
+  <header style="text-align: center;">
+    <h3><i class="fas fa-{{ crafter.fa_icon }}"></i>&nbsp;{{ crafter }}</h3>
+  </header>
+
+  <section>
+  {% for k,v in claimstats.items %}
+    <svg width="30%" height="100" viewBox="0 0 42 42" class="donut">
+    <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle>
+    <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="silver" stroke-width="3"></circle>
+    {% if v > 0 %}
+      <circle class="donut-segment" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="orange" stroke-width="3" stroke-dasharray="{{ v }}" stroke-dashoffset="0"></circle>
+    {% endif %}
+    <text x="50%" y="50%" style="font-size: 0.6em; line-height: 1; text-anchor: middle;">{{ k }}</text>
+    <text x="50%" y="70%" style="font-size: 0.4em; line-height: 1; text-anchor: middle;">{{ v }}%</text>
+    </svg>
+  {% endfor %}
+  </section>
+
+  <section>
+  {% for k,v in typestats.items %}
+    {% if v > 0 %}
+    <svg width="100%" height="20">
+      <rect fill='silver' width='100%' height='100%'></rect>;
+      <rect fill='orange' width='{{ v }}%' height='100%'></rect>
+      <text x="50%" y="65%" style="font-size: 0.6em; line-height: 1; text-anchor: middle;">{{ k }}</text>
+    </svg>
+    {% endif %}
+  {% endfor %}
+  </section>
+
+  <section style="text-align: center;">
+  {% for k,v in tags.items %}
+    <span class="label"><a href="/works?tags__name={{ k }}" style="color: white;"><b><i class="fas fa-tag"></i>&nbsp;{{ k }}</b></a></span>
+  {% endfor %}
+  </section>
+
+  <footer style="font-size: 0.8rem;">
+    <button disabled>{{ crafter.user.date_joined|date:"Y-m-d" }}</button>
+    <button disabled>{{ crafter.user.last_login|date:"Y-m-d"|default:"1970-01-01" }}</button>
+    <a href="{% url 'crafter_detail' crafter.pk %}"><button style="float: right;"><i class="fas fa-{{ crafter.fa_icon }}"></i>&nbsp;More</button></a>
+  </footer>
+</article>

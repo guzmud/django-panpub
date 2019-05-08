@@ -1,0 +1,50 @@
+{% extends override_base|default:"base.html" %}
+{% load static %}
+{% load panpub_tags %}
+
+{% block content %}
+<section class="filter-simple">
+
+  <div class="flex center">
+    <div><a class="button" href="{% url 'work_random' %}"><span style="font-variant: small-caps;">random work&nbsp;<i class="fas fa-random"></i></span></a></div>
+    <div><button class="filter-simple-button is-active" data-filter="all"><i class="fas fa-file"></i>&nbsp;all</button></div>
+    {% for worktype in worktypes %}
+      {% if worktype != 'content'  %}
+        <div><button class="filter-simple-button" data-filter="{{ worktype }}"><i class="fas fa-{% workicon worktype %}"></i>&nbsp;{{ worktype }}</button></div>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="flex two">
+    {% if search_list %}
+    <div>
+      <span style="font-variant: small-caps;">Current tags</span>
+      {% for tag in search_list %}
+     <span class="label"><a href="/works?tags__name={{ tag }}" style="color: white;"><b><i class="fas fa-tag"></i>&nbsp;{{ tag }}</b></a></span><span class="label" style="background-color: transparent; padding-left: 0;"><a href="/works?tags__name={% for otag in search_list %}{% if otag != tag %}{{ otag }}, {% endif %}{% endfor %}"><i class="fas fa-minus-square fa-lg" style="color: red;"></i></a></span>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if suggested_list %}
+    <div>
+      <span style="font-variant: small-caps;">Suggested tags</span>
+      {% for tag in suggested_list %}
+        <span class="label"><a href="/works?tags__name={{ tag }}" style="color: white;"><b><i class="fas fa-tag"></i>&nbsp;{{ tag }}</b></a></span><span class="label" style="background-color: transparent; padding-left: 0;"><a href="/works?tags__name={% for otag in search_list %}{{ otag }},{% endfor %}{{ tag }}"><i class="fas fa-plus-square fa-lg" style="color: lime;"></i></a></span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="flex three" style="margin-top: 3rem;">
+    {% for work in works %}
+      <div class="filter-simple-item {{ work.worktype }}">
+        {% if work.tags.last %}
+          <a href="?tags__name={{ work.tags.last }}&anchor=works"><span class="label" style="background: orange; position: absolute; z-index: 3; font-size: 1rem;"><i class="fas fa-tag"></i>&nbsp;{{ work.tags.last }}</span></a>
+        {% endif %}
+
+        {% workcard work %}
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

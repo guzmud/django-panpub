@@ -8,57 +8,119 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link href="{% static 'css/all.css' %}" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="https://unpkg.com/picnic" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/colors-css/2.2.0/colors.min.css">
+
+    {% comment %}
     <link href="{% static 'css/foundation.css' %}" rel="stylesheet" media="screen">
     <link href="{% static 'css/django_panpub.css' %}" rel="stylesheet" media="screen">
-    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
-
-    <title>{{ platform.get_name }}{% block title %}{% endblock title %}</title>
-
     {% recolor_css platform %}
+    {% endcomment %}
+
+    <style>button, .button, .label {background: orange;}</style>
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    <title>{{ platform.get_name }}{% block title %}{% endblock title %}</title>
   </head>
 
   <body>
-  <a id="top"></a>
-  <div data-sticky-container>
-    <div class="title-bar" data-sticky data-options="marginTop:0;" style="width: 100%; background: #000000;">
-      <div class="title-bar-left">
-        <ul class="menu tabs" data-tabs id="collapsing-tabs" style="border: none; background: inherit; float: left !important;">
-          <li style="padding-left: 1rem; padding-right: 1rem;">
-            <form action="/" method="get">
-              <input class="input-group-field" type="text" id="id_tags__name" name="tags__name" value="{{ search_value|default:'' }}" placeholder="Search by tags ..." style="height: 1.8rem;">
-              <input class="input-group-field" id="anchor" name="anchor" type="hidden" value="works">
-            </form>
-          </li>
-          <li class="tabs-title{% if anchor == 'portal' %} is-active{% endif %}">
-            <a href="{% if request.path == '/' %}#portal{% else %}/?anchor=portal{% endif %}"{% if anchor == 'portal' %} aria-selected="true"{% endif %}><i class="fas fa-atom fa-lg" style="padding-right: 0.25rem;"></i>&nbsp;<b>Portal</b></a>
-          </li>
-          <li class="tabs-title{% if anchor == 'works' %} is-active{% endif %}">
-            <a href="{% if request.path == '/' %}#works{% else %}/?anchor=works{% endif %}"{% if anchor == 'works' %} aria-selected="true"{% endif %}><i class="fa fa-atlas fa-lg" style="padding-right: 0.25rem;"></i>&nbsp;<b>Works</b></a>
-          </li>
-          <li class="tabs-title{% if anchor == 'crafters' %} is-active{% endif %}">
-            <a href="{% if request.path == '/' %}#crafters{% else %}/?anchor=crafters{% endif %}"{% if anchor == 'crafters' %} aria-selected="true"{% endif %}><i class="fas fa-users fa-lg" style="padding-right: 0.25rem;"></i>&nbsp;<b>Crafters</b></a>
-          </li>
-        </ul>
+    <a id="top"></a>
+
+    <nav style="background-image: url('/static/img/{{ platform.get_name }}.png'); background-size: contain; background-repeat: no-repeat;  background-position: left; background-color: black;">
+      <!-- responsive-->
+      <input id="bmenua" type="checkbox" class="show">
+      <label for="bmenua" class="burger pseudo button" style="color: silver;">menu</label>
+
+      <div class="menu" style="font-size: .75em;">
+        <form action="{% url 'works' %}" method="get" style="display: inline-block;">
+          <input type="text" id="id_tags__name" name="tags__name" value="{{ search_value|default:'' }}" placeholder="Search by tags ...">
+        </form>
+        <a href="{% url 'portal' %}" class="button"><i class="fas fa-home"></i></a>
+        <a href="{% url 'works' %}" class="button"><i class="fas fa-folder-open"></i></a>
+        <a href="{% url 'crafters' %}" class="button"><i class="fas fa-users"></i></a>
+        <a href="#top" class="button"><i class="fas fa-angle-double-up"></i></a>
       </div>
-      <div class="title-bar-right" style="background-image: url('/static/img/{{ platform.get_name }}.png'); height: 1.8rem; background-size: cover; background-position: center;">
+    </nav>
+
+    <div style="padding-top: 4rem; width: 90%; margin: auto;">
+      {% if messages %}
+      <div class="row">
+        {% for message in messages %}
+        <div class="card">
+          <p><i class="fas fa-{% if message.tags == 'error' %}dizzy{% elif message.tags == 'warning' %}frown-open{% elif message.tags == 'success' %}grin-wink{% elif message.tags == 'info' %}grin-beam-sweat{% elif message.tags == 'debug' %}meh{% else %}cat{% endif %}" style="padding-right: 0.5rem; vertical-align: middle"></i>&nbsp;{{ message }}</p>
+          <a class="close" id='close' onclick='this.parentNode.parentNode.removeChild(this.parentNode); return false;'>x</a>
+        </div>
+        {% endfor %}
       </div>
+      {% endif %}
+
+      {% block content %}
+      <div class="tabs three">
+        <input id='tab-1' type='radio' name='tabgroupA'/>
+        <label class="stack pseudo button toggle" for="tab-1">Exhibit 0</label>
+        <input id='tab-2' type='radio' name='tabgroupA'>
+        <label class="stack pseudo button toggle" for="tab-2">Exhibit 1</label>
+        <input id='tab-3' type='radio' name='tabgroupA' checked />
+        {% if manifeste %}
+        <label class="stack pseudo button toggle" for="tab-3">
+          Manifeste
+        </label>
+        {% endif %}
+        <div class="row" style="font-size: 0.8rem;">
+          <div id='tab-1'>
+            <p>Exhibit 0</p>
+          </div>
+          <div id='tab-2'>
+            <p>Exhibit 1</p>
+          </div>
+          {% if manifeste %}
+          <div id='tab-3'>
+            <p>{% text_display manifeste %}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="flex three" style="margin-top: 3rem;">
+        <div>
+        <span class="label" style="position: absolute; z-index:3; font-size: 1rem;">Latest created&nbsp;<i class="fas fa-file"></i></span>
+        {% if latest_created %}
+          {% workcard latest_created %}
+        {% endif %}
+        </div>
+        <div>
+        <span class="label" style="position: absolute; z-index:3; font-size: 1rem;">Latest updated&nbsp;<i class="fas fa-edit"></i></span>
+        {% if latest_updated %}
+          {% workcard latest_updated %}
+        {% endif %}
+        </div>
+        <div>
+        <span class="label" style="position: absolute; z-index:3; font-size: 1rem;">Random work&nbsp;<i class="fas fa-random"></i></span>
+        {% if random_pick %}
+          {% workcard random_pick %}
+        {% endif %}
+        </div>
+      </div>
+
+      <div style="text-align: center;">
+        <a href="{% url 'works' %}" class="button">Search the works</a>
+      </div>
+
+      <div class="flex three" style="margin-top: 3rem;">
+      {% for crafter in latest_crafters %}
+        <div>
+          {% craftercard crafter %}
+        </div>
+      {% endfor %}
+      </div>
+
+      <div style="text-align: center;">
+        <a href="{% url 'crafters' %}" class="button">Meet the crafters</a>
+      </div>
+      {% endblock content %}
     </div>
-  </div>
 
-  {% if messages %}
-  <div style="width: 80%; margin-left: auto; margin-right: auto">
-    {% for message in messages %}
-      <div class="callout" data-closable="slide-out-right">
-        <span style="font-weight: bold;"><i class="fas fa-{% if message.tags == 'error' %}dizzy{% elif message.tags == 'warning' %}frown-open{% elif message.tags == 'success' %}grin-wink{% elif message.tags == 'info' %}grin-beam-sweat{% elif message.tags == 'debug' %}meh{% else %}cat{% endif %} fa-2x" style="padding-right: 0.5rem; vertical-align: middle"></i>&nbsp;{{ message }}</span>
-        <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
-          <span aria-hidden="true"><i class="far fa-times-circle fa-sm"></i></span>
-        </button>
-      </div>
-    {% endfor %}
-  </div>
-  {% endif %}
-
+  {% comment %}
   <div>
     {% if platform and platform.use_portal %}
       <div class="contact-panel" id="staff-panel" data-toggler=".is-active" style="right: 11rem;">
@@ -126,33 +188,13 @@
     </div>
     {% endif %}
 
-    <div class="contact-panel" style="right: 0rem;">
-      <a class="contact-panel-button" href="#top"><i class="fas fa-level-up-alt"></i></a>
-    </div>
-
-  {% block content %}
-    <div class="tabs-content" data-tabs-content="collapsing-tabs">
-      <div class="tabs-panel{% if anchor == 'portal' %} is-active{% endif %}" id="portal">
-        {% include "panpub/panel/portal.html" %}
-      </div>
-      <div class="tabs-panel{% if anchor == 'works' %} is-active{% endif %}" id="works">
-        {% include "panpub/panel/works.html" %}
-      </div>
-      <div class="tabs-panel{% if anchor == 'crafters' %} is-active{% endif %}" id="crafters">
-        {% include "panpub/panel/crafters.html" %}
-      </div>
-    </div>
-  {% endblock content %}
-  </div>
-
-  </div>
-
-    {% block javascript %}
-    {% endblock javascript %}
-    <script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/what-input.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/foundation.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/django_panpub.js' %}"></script>
-    <script>$(document).foundation();</script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jplayer/2.9.2/jplayer/jquery.jplayer.min.js"></script>
+  {% endcomment %}
+
+  {% block javascript %}
+  {% endblock javascript %}
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script type="text/javascript" src="{% static 'js/django_panpub.js' %}"></script>
   </body>
 </html>

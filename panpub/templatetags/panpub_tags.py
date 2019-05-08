@@ -2,10 +2,6 @@ import base64
 
 from io import BytesIO
 
-import matplotlib
-matplotlib.use('agg')
-import matplotlib.pyplot as plt
-
 from django import template
 from django.forms import FileInput, Textarea
 from pydub import AudioSegment
@@ -13,7 +9,7 @@ from pydub import AudioSegment
 from panpub.forms import AudioExport, CorpusExport, TextExport, ImageExport
 from panpub.genericviews import ContentDelete, ContentUpdate, ContentMediate
 from panpub.models import Audio, Claim, Crafter, Content, Corpus, Image, Platform, Text
-from panpub.utils import worktype_icon
+from panpub.utils import topof, worktypes, worktype_icon
 
 
 register = template.Library()
@@ -133,26 +129,26 @@ def main_color(platform):
 
 
 @register.simple_tag
-def base64_image(image):
-    return base64.b64encode(image.document.read()).decode()
+def base64_document(work):
+    return base64.b64encode(work.document.read()).decode()
 
 
 @register.inclusion_tag('panpub/display/image.html')
 def image_display(work):
     if Image.objects.filter(content_ptr=work).exists():
-        return {'b64image': base64_image(Image.objects.get(content_ptr=work)), }
+        return {'b64image': base64_document(Image.objects.get(content_ptr=work)), }
 
 
 @register.inclusion_tag('panpub/display/image_thumbnail.html')
 def image_thumbnail(work):
     if Image.objects.filter(content_ptr=work).exists():
-        return {'b64image': base64_image(Image.objects.get(content_ptr=work)), }
+        return {'b64image': base64_document(Image.objects.get(content_ptr=work)), }
 
 
 @register.inclusion_tag('panpub/display/audio.html')
 def audio_display(work):
     if Audio.objects.filter(content_ptr=work).exists():
-        return {'audio': None, }
+        return {'b64audio': base64_document(Audio.objects.get(content_ptr=work)), }
 
 
 @register.inclusion_tag('panpub/display/audio_thumbnail.html')
@@ -160,9 +156,17 @@ def audio_thumbnail(work):
     if Audio.objects.filter(content_ptr=work).exists():
         sound = AudioSegment.from_file(Audio.objects.get(content_ptr=work).document.path)
 
-        plt.plot(sound.get_array_of_samples())
+        import matplotlib
+        matplotlib.use('agg')
+        import matplotlib.pyplot as plt
+
+        sarray = sound.get_array_of_samples()
+        quarter = int(len(sarray)/4)
+        plt.plot(sound.get_array_of_samples()[:quarter], 'c--')
+        plt.axis('off')
         img = BytesIO()
-        plt.savefig(img, format='png')
+        plt.savefig(img, format='png', bbox_inches='tight', pad_inches=-0.5, frameon=False, dpi=50)
+        plt.clf()
         img.seek(0)
         b64plot = base64.b64encode(img.read()).decode()
         return {'audio_plot': b64plot, }
@@ -177,7 +181,7 @@ def text_display(work):
 @register.inclusion_tag('panpub/display/text_thumbnail.html')
 def text_thumbnail(work):
     if Text.objects.filter(content_ptr=work).exists():
-        return {'text': b' '.join(Text.objects.get(content_ptr=work).document.read()[:50].split(b' ')[:-1]).decode('utf-8')}
+        return {'text': b' '.join(Text.objects.get(content_ptr=work).document.read()[:150].split(b' ')[:-1]).decode('utf-8')}
 
 
 @register.inclusion_tag('panpub/display/corpus.html')
@@ -270,14 +274,40 @@ def cartouche(work, user):
 
 @register.inclusion_tag('panpub/components/workcard.html')
 def workcard(work):
-    tags, creators, curators, mediators = work_metainfo(work)
+    tags = work.get_tags()
 
     return {'work': work,
             'tags': tags,
-            'creators': creators,
-            'curators': curators,
-            'mediators': mediators,
            }
+
+
+@register.inclusion_tag('panpub/components/craftercard.html')
+def craftercard(crafter):
+    claimtotal = crafter.claims().count()
+    claimstats = {'CRT': round(100.0*crafter.claims('CRT').count()/claimtotal, 2),
+                  'CUR': round(100.0*crafter.claims('CUR').count()/claimtotal, 2),
+                  'MED': round(100.0*crafter.claims('MED').count()/claimtotal, 2),
+                  }
+
+    typestats = {k: 0 for k in worktypes(include_content=False)}
+    for cl in crafter.claims():
+        if cl.content.worktype in typestats:
+            typestats[cl.content.worktype] += 1
+    for ts in typestats:
+        typestats[ts] = 100.0*typestats[ts]/claimtotal
+    typestats = topof(typestats)
+
+    tags = dict()
+    for cl in crafter.claims():
+        for t in cl.content.tags.all():
+            tags[t] = tags.get(t, 0)+1
+    tags = topof(tags, k=5)
+
+    return {'crafter': crafter,
+            'claimstats': claimstats,
+            'typestats': typestats,
+            'tags': tags,
+            }
 
 
 @register.inclusion_tag('panpub/components/recolor_css.html')

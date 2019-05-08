@@ -59,6 +59,82 @@ mediator_fields = ['name',
 def portal(request):
     platform = Platform.load()
 
+    # to be turned into a decorator @deployed?
+    if (platform is None) or (platform.root_collective is None):
+        return redirect('deploy')
+
+    excludelist = []
+    latest_created = Content.objects.filter(ready=True).order_by('-created_at')
+    if len(latest_created)>0:
+        latest_created = latest_created[0]
+        excludelist.append(latest_created.pk)
+    else:
+        latest_created = None
+
+    latest_updated = Content.objects.filter(ready=True).order_by('-updated_at').exclude(pk__in=excludelist)
+    if len(latest_updated)>0:
+        latest_updated = latest_updated[0]
+        excludelist.append(latest_updated.pk)
+    else:
+        latest_updated = None
+
+    random_pick = Content.objects.filter(ready=True).exclude(pk__in=excludelist)
+    if len(random_pick)>0:
+        random_pick = random.choice(random_pick)
+    else:
+        random_pick = None
+
+    # exhibit panel
+    exhibits = Content.objects.filter(ready=True).filter(is_exhibit=True).order_by('-updated_at')
+
+    manifeste = platform.root_collective.manifeste
+
+    latest_crafters = Crafter.objects.all()[:3]
+
+    return render(request,
+                  'panpub/portal.html',
+                  {'exhibits': exhibits,
+                   'manifeste': manifeste,
+                   'latest_created': latest_created,
+                   'latest_updated': latest_updated,
+                   'random_pick': random_pick,
+                   'latest_crafters': latest_crafters,
+                  })
+
+
+def works(request):
+    # works panel
+    worktypes = utils.worktypes()
+
+    # rewriting ' ' in ',' for the CSV parser in the tag filter
+    #grq_tags = request.GET.getlist('tags__name')
+    #if grq_tags:
+    #    grq_tags = [tag.replace(' ', ',') for tag in grq_tags]
+    #    grq = request.GET.copy()
+    #    grq = grq.setlist('tags_name', grq_tags)
+    #else:
+    #    grq = request.GET.copy()
+    #works = TaggedWorkFilter(grq, queryset=Content.objects.all())
+    works = TaggedWorkFilter(request.GET, queryset=Content.objects.all()).qs.order_by('-updated_at')
+
+    return render(request,
+                  'panpub/works.html',
+                  {'works': works,
+                   'worktypes': worktypes,
+                  })
+
+
+def crafters(request):
+    crafters = Crafter.objects.all().order_by('-user__last_login')
+    return render(request,
+                  'panpub/crafters.html',
+                  {'crafters': crafters,
+                  })
+
+
+def deploy(request):
+    platform = Platform.load()
+
     if (platform is None) or (platform.root_collective is None):
         crafter_deploy = CrafterDeploy()
         collective_deploy = CollectiveDeploy()
@@ -89,38 +165,8 @@ def portal(request):
                        'collective_deploy': collective_deploy,
                        'platform_deploy': platform_deploy,
                        })
-
-    # exhibit panel
-    exhibits = Content.objects.filter(ready=True).filter(is_exhibit=True).order_by('updated_at')
-
-    # works panel
-    worktypes = utils.worktypes()
-
-    # rewriting ' ' in ',' for the CSV parser in the tag filter
-    #grq_tags = request.GET.getlist('tags__name')
-    #if grq_tags:
-    #    grq_tags = [tag.replace(' ', ',') for tag in grq_tags]
-    #    grq = request.GET.copy()
-    #    grq = grq.setlist('tags_name', grq_tags)
-    #else:
-    #    grq = request.GET.copy()
-    #works = TaggedWorkFilter(grq, queryset=Content.objects.all())
-    works = TaggedWorkFilter(request.GET, queryset=Content.objects.all())
-
-    # crafter panel
-    crafters = Crafter.objects.all()
-
-    # collective panel
-    collective = platform.root_collective
-
-    return render(request,
-                  'panpub/portal.html',
-                  {'exhibits': exhibits,
-                   'collective': collective,
-                   'crafters': crafters,
-                   'worktypes': worktypes,
-                   'works': works,
-                  })
+    else:
+        return redirect('portal')
 
 
 def contact_form(request):
