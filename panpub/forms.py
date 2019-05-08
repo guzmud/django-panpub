@@ -81,7 +81,7 @@ class ContentUpload(forms.ModelForm):
 
     class Meta:
         model = Content
-        exclude = ['id', 'ready', 'claims']
+        exclude = ['id', 'ready', 'claims', 'is_exhibit']
         widgets = {
             'description': forms.Textarea(attrs={"rows": 3}),
         }

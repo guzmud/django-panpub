@@ -101,6 +101,25 @@ class Crafter(models.Model):
             claims = claims.filter(claim_type=claim_type)
         return claims
 
+    def compact_claims(self):
+        claims = Claim.objects.filter(crafter=self)
+        crtclaims = claims.filter(claim_type='CRT')
+        curclaims = claims.filter(claim_type='CUR')
+        medclaims = claims.filter(claim_type='MED')
+        claims = Claim.objects.none()
+
+        for c in crtclaims:
+            if not claims.filter(content=c.content).exists():
+                claims = claims | Claim.objects.filter(pk=c.pk)
+        for c in curclaims:
+            if not claims.filter(content=c.content).exists():
+                claims = claims | Claim.objects.filter(pk=c.pk)
+        for c in medclaims:
+            if not claims.filter(content=c.content).exists():
+                claims = claims | Claim.objects.filter(pk=c.pk)
+
+        return claims
+
     def collectives(self):
         collectives = Collective.objects.filter(members__in=[self, ])
         return collectives
@@ -197,7 +216,9 @@ class Content(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     tags = TagField(case_sensitive=False,
                     force_lowercase=True,
-                    max_count=5)
+                    max_count=5,
+                    null=True, blank=True,
+                    )
 
     worktype = models.CharField(max_length=15,
                                 choices=worktypes_choice(),
